@@ -3,8 +3,15 @@
 <head>
 <meta charset="utf-8">
 <title>Warlords × AI — Paul Booth</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="description" content="How one person and a fleet of AI agents shipped a real Steam game in 35 days.">
+<!-- iPhone Safari has no Fullscreen API, so the next best thing is to let the page
+     paint under the browser chrome and to launch chromeless from the home screen. -->
+<meta name="theme-color" content="#120e09">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Warlords × AI">
 <link rel="icon" href="favicon.ico" sizes="any">
 <link rel="icon" type="image/png" href="assets/img/favicon.png">
 <link rel="apple-touch-icon" href="assets/img/favicon.png">
@@ -1186,7 +1193,7 @@ ttest_summon_storm.gd    → storm did… something?
 <div id="rotate">
   <img src="assets/img/library_logo_1280.png" alt="Warlords">
   <div class="r1">Turn your phone sideways</div>
-  <div class="r2">The deck is built for a wide screen. Tap or swipe to move through it.</div>
+  <div class="r2">Then tap once to go fullscreen. Tap or swipe to move through it.</div>
 </div>
 
 <script>
@@ -1260,8 +1267,24 @@ addEventListener('keydown',e=>{
 addEventListener('click',e=>{if(e.target.closest('button,.ba,a,audio,#rotate'))return;next();});
 
 /* On a touch device the footer hint should describe the controls that exist. */
-if(matchMedia('(pointer:coarse)').matches)
-  document.getElementById('hint').textContent='tap or swipe to navigate';
+const COARSE=matchMedia('(pointer:coarse)').matches;
+if(COARSE) document.getElementById('hint').textContent='tap or swipe to navigate';
+
+/* Fullscreen needs a user gesture, and a rotation isn't one — so the FIRST tap in
+   landscape asks for it, once. Android and iPad grant it; iPhone Safari has no
+   Fullscreen API at all and simply rejects, which costs nothing. */
+let fsAsked=false;
+function goFullscreenOnce(){
+  if(fsAsked||!COARSE||document.fullscreenElement) return;
+  if(innerHeight>innerWidth) return;               // still portrait, wait for the turn
+  fsAsked=true;
+  const el=document.documentElement;
+  const req=el.requestFullscreen||el.webkitRequestFullscreen;
+  if(req) Promise.resolve(req.call(el,{navigationUI:'hide'})).catch(()=>{});
+  if(screen.orientation&&screen.orientation.lock)
+    Promise.resolve(screen.orientation.lock('landscape')).catch(()=>{});
+}
+addEventListener('pointerdown',goFullscreenOnce,{once:false});
 
 /* Touch. A tap falls through to the click handler above, so it needs nothing here;
    a horizontal swipe moves either way and calls preventDefault so the browser never
