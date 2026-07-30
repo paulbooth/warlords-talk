@@ -26,10 +26,16 @@
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html,body{height:100%;background:#000;overflow:hidden}
-body{font-family:var(--serif);color:var(--tx)}
+/* touch-action: manipulation drops the double-tap-zoom wait, so a tap advances
+   immediately on a phone instead of ~300 ms later. Pinch zoom still works. */
+body{font-family:var(--serif);color:var(--tx);touch-action:manipulation;
+  -webkit-tap-highlight-color:transparent}
 
-#viewport{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:#000}
-#stage{position:relative;width:1920px;height:1080px;flex:none;overflow:hidden;
+/* The stage is pinned to the viewport's centre and scaled about its own middle.
+   Flex centring looked identical at full size but clamps to the left edge once the
+   unscaled 1920px box is wider than the window, which is every phone. */
+#viewport{position:fixed;inset:0;overflow:hidden;background:#000}
+#stage{position:absolute;left:50%;top:50%;width:1920px;height:1080px;overflow:hidden;
   background:radial-gradient(120% 90% at 50% 0%,var(--bg2) 0%,var(--bg1) 45%,var(--bg0) 100%)}
 
 /* ============ slides ============ */
@@ -200,6 +206,20 @@ table.tb{border-collapse:collapse;width:100%}
 .hfan{height:34px;width:72%;border:2px solid var(--gold-dim);border-bottom:none;border-radius:14px 14px 0 0}
 
 .footer-note{font-size:24px;color:var(--tx3);text-align:center;margin-top:18px;font-style:italic}
+/* ---- phones ----------------------------------------------------------------
+   The stage is a fixed 1920x1080 scaled to fit, so a portrait phone would render
+   it as a postage stamp. Ask for landscape instead of shrinking the deck. Gated on
+   a coarse pointer so no desktop browser, resized or not, ever sees this. */
+#rotate{display:none}
+@media (orientation:portrait) and (max-width:900px){
+  #rotate{display:flex;position:fixed;inset:0;z-index:200;background:var(--bg0);
+    flex-direction:column;align-items:center;justify-content:center;gap:26px;
+    text-align:center;padding:48px}
+  #rotate img{width:min(76vw,420px)}
+  #rotate .r1{font-family:var(--disp);font-size:30px;color:var(--tx);letter-spacing:.04em}
+  #rotate .r2{font-size:21px;color:var(--tx3);font-style:italic}
+}
+
 /* ---- the AMA easter egg: two of us walk on, high-five, and get summoned ---- */
 .egg{position:absolute;left:0;right:0;bottom:86px;height:190px;pointer-events:none;z-index:40;
   transform:scale(1.24);transform-origin:50% 100%}
@@ -1042,7 +1062,31 @@ ttest_summon_storm.gd    → storm did… something?
   </div>
 </section>
 
-<!-- ============================================================ 47 NEXT -->
+<!-- ============================================================ 47 THE BILL -->
+<section class="slide" data-act="VI · Scars">
+  <div class="kick">The part everyone is doing arithmetic about</div>
+  <h2>The whole bill was about <em>five hundred dollars</em></h2>
+  <div class="row" style="gap:56px">
+    <div class="col" style="flex:1.25">
+      <table class="tb b">
+        <tr><th>What</th><th style="text-align:right">Cost</th></tr>
+        <tr><td class="g">Claude Max</td><td class="mono" style="text-align:right">$200 / month</td></tr>
+        <tr><td class="g">nano-banana image generation</td><td class="mono" style="text-align:right">$100, one month</td></tr>
+        <tr><td class="g">Suno</td><td class="mono" style="text-align:right">$10 / month</td></tr>
+        <tr><td class="g">Steam Direct, once per game</td><td class="mono" style="text-align:right">$100</td></tr>
+        <tr><td>Claude usage credits, bought once</td><td class="mono" style="text-align:right">~$90</td></tr>
+        <tr><td><b>Everything else</b></td><td class="mono" style="text-align:right"><b>$0</b></td></tr>
+      </table>
+    </div>
+    <div class="col" style="flex:1">
+      <div class="sub b" style="font-size:27px">No engine license, no middleware, no contractors, no art budget, no music budget, no publisher.</div>
+      <div class="sub b" style="font-size:27px">The <b>usage credits were the one bad buy</b>. The Max plan already covers the fleet, and paying per token on top of it bought me nothing.</div>
+      <div class="quote b" style="font-size:25px">Five weeks of a content studio, for roughly what a single day of contract art would cost.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ 48 NEXT -->
 <section class="slide" data-act="Close">
   <div class="kick">Roadmap</div>
   <h2>Where it goes from here</h2>
@@ -1139,15 +1183,25 @@ ttest_summon_storm.gd    → storm did… something?
 <div id="bar"></div><div id="pgnum"></div><div id="acttag"></div>
 <div id="hint">← → navigate · F fullscreen</div>
 </div></div>
+<div id="rotate">
+  <img src="assets/img/library_logo_1280.png" alt="Warlords">
+  <div class="r1">Turn your phone sideways</div>
+  <div class="r2">The deck is built for a wide screen. Tap or swipe to move through it.</div>
+</div>
 
 <script>
 /* ============ engine ============ */
 const slides=[...document.querySelectorAll('.slide')];
 let cur=0;
 const bar=document.getElementById('bar'),pg=document.getElementById('pgnum'),act=document.getElementById('acttag');
-function fit(){const s=Math.min(innerWidth/1920,innerHeight/1080);document.getElementById('stage').style.transform=`scale(${s})`;document.getElementById('stage').style.transformOrigin='center';}
+function fit(){
+  const s=Math.min(innerWidth/1920,innerHeight/1080);
+  const st=document.getElementById('stage');
+  st.style.transformOrigin='center';
+  st.style.transform=`translate(-50%,-50%) scale(${s})`;
+}
 addEventListener('resize',fit);
-document.getElementById('viewport').style.overflow='visible';
+addEventListener('orientationchange',fit);
 
 /* A caption riding directly behind another build is not its own beat — it arrives
    with the picture it describes. */
@@ -1203,7 +1257,22 @@ addEventListener('keydown',e=>{
   else if(e.key==='End')show(slides.length-1,true);
   else if(e.key==='f'||e.key==='F'){document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen();}
 });
-addEventListener('click',e=>{if(e.target.closest('button,.ba,a,audio'))return;next();});
+addEventListener('click',e=>{if(e.target.closest('button,.ba,a,audio,#rotate'))return;next();});
+
+/* On a touch device the footer hint should describe the controls that exist. */
+if(matchMedia('(pointer:coarse)').matches)
+  document.getElementById('hint').textContent='tap or swipe to navigate';
+
+/* Touch. A tap falls through to the click handler above, so it needs nothing here;
+   a horizontal swipe moves either way and calls preventDefault so the browser never
+   synthesises the trailing click and double-advances. */
+let tx=0,ty=0;
+addEventListener('touchstart',e=>{const t=e.changedTouches[0];tx=t.clientX;ty=t.clientY;},{passive:true});
+addEventListener('touchend',e=>{
+  if(e.target.closest('button,.ba,a,audio,#rotate')) return;
+  const t=e.changedTouches[0],dx=t.clientX-tx,dy=t.clientY-ty;
+  if(Math.abs(dx)>60&&Math.abs(dx)>Math.abs(dy)*1.4){e.preventDefault();dx<0?next():prev();}
+},{passive:false});
 
 /* ============ embers ============ */
 const cv=document.getElementById('embers'),cx=cv.getContext('2d');cv.width=1920;cv.height=1080;
