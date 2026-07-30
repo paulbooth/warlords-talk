@@ -51,7 +51,7 @@ h2{font-family:var(--disp);font-weight:700;font-size:54px;line-height:1.1;color:
 h2 em{font-style:normal;color:var(--gold-hi)}
 .sub{font-size:30px;color:var(--tx2);line-height:1.45;font-weight:400;max-width:1250px}
 .sub b{color:var(--gold-hi);font-weight:600}
-.small{font-size:22px;color:var(--tx3)}
+.small{font-size:25px;color:var(--tx3)}
 .gold{color:var(--gold-hi)}
 .crim{color:var(--crimson-hi)}
 
@@ -72,27 +72,27 @@ h2 em{font-style:normal;color:var(--gold-hi)}
 .frame{border:1px solid #4a3b24;border-radius:10px;overflow:hidden;background:#000;
   box-shadow:0 30px 80px rgba(0,0,0,.55),inset 0 0 0 1px rgba(242,205,126,.07)}
 .frame img,.frame video{display:block;width:100%;height:100%;object-fit:cover}
-.cap{font-size:20px;color:var(--tx3);font-style:italic;margin-top:12px;text-align:center}
+.cap{font-size:23px;color:var(--tx3);font-style:italic;margin-top:12px;text-align:center}
 
 /* stat wall */
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:26px;flex:1;align-content:center}
 .stat{background:linear-gradient(180deg,var(--panel-hi),var(--panel));border:1px solid #443622;border-radius:12px;
   padding:30px 18px 26px;text-align:center;box-shadow:0 12px 30px rgba(0,0,0,.35)}
 .stat .v{font-family:var(--disp);font-weight:700;font-size:64px;color:var(--gold-hi);line-height:1}
-.stat .l{font-size:21px;color:var(--tx2);margin-top:12px;line-height:1.25}
+.stat .l{font-size:23px;color:var(--tx2);margin-top:12px;line-height:1.25}
 .stat.hero{grid-row:span 1}
 .stat.crim .v{color:var(--crimson-hi)}
 
 /* chips */
 .chips{display:flex;flex-wrap:wrap;gap:14px}
 .chip{background:var(--panel-hi);border:1px solid #4a3b24;border-radius:999px;
-  padding:10px 22px;font-size:23px;color:var(--tx);white-space:nowrap}
+  padding:10px 22px;font-size:25px;color:var(--tx);white-space:nowrap}
 .chip b{color:var(--gold-hi);font-weight:600}
 
 /* vellum cards (prompts) */
 .vell{background:linear-gradient(180deg,#efe3c4,#e2d3ac);color:var(--ink);border-radius:8px;
   padding:24px 30px;box-shadow:0 14px 34px rgba(0,0,0,.45);border:1px solid #b7a074;position:relative}
-.vell .d{font-family:var(--disp);font-size:16px;letter-spacing:.22em;color:#7d6634;margin-bottom:10px;text-transform:uppercase}
+.vell .d{font-family:var(--disp);font-size:18px;letter-spacing:.22em;color:#7d6634;margin-bottom:10px;text-transform:uppercase}
 .vell .t{font-family:var(--mono);font-size:22.5px;line-height:1.5;white-space:pre-wrap;color:#241b10}
 .vell.sm .t{font-size:21px}
 
@@ -106,15 +106,15 @@ h2 em{font-style:normal;color:var(--gold-hi)}
 .fstep{background:linear-gradient(180deg,var(--panel-hi),var(--panel));border:1px solid #4a3b24;border-radius:10px;
   padding:20px 22px;text-align:center;flex:1;min-width:0}
 .fstep .fi{font-family:var(--disp);font-weight:700;font-size:24px;color:var(--gold-hi);margin-bottom:8px}
-.fstep .fd{font-size:20px;color:var(--tx2);line-height:1.35}
+.fstep .fd{font-size:22px;color:var(--tx2);line-height:1.35}
 .farr{align-self:center;color:var(--gold-dim);font-size:34px;padding:0 12px;flex:none}
 
 /* tables */
 table.tb{border-collapse:collapse;width:100%}
-.tb td,.tb th{padding:11px 18px;text-align:left;font-size:24px;border-bottom:1px solid #3a2e1c}
-.tb th{font-family:var(--disp);font-size:18px;letter-spacing:.18em;color:var(--gold);text-transform:uppercase;font-weight:700}
+.tb td,.tb th{padding:11px 18px;text-align:left;font-size:26px;border-bottom:1px solid #3a2e1c}
+.tb th{font-family:var(--disp);font-size:20px;letter-spacing:.18em;color:var(--gold);text-transform:uppercase;font-weight:700}
 .tb td.g{color:var(--gold-hi)}
-.tb td.mono{font-family:var(--mono);font-size:20px;color:var(--tx2)}
+.tb td.mono{font-family:var(--mono);font-size:22px;color:var(--tx2)}
 
 /* before/after slider — sized by the height it is GIVEN, so a 16:9 pair always
    lands whole inside the stage instead of being cropped by overflow:hidden */
@@ -128,7 +128,8 @@ table.tb{border-collapse:collapse;width:100%}
 .ba .handle{position:absolute;top:0;bottom:0;left:50%;width:3px;background:var(--gold);box-shadow:0 0 18px rgba(217,168,78,.8)}
 .ba .handle::after{content:'◂ ▸';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
   background:var(--gold);color:#241b10;font-size:15px;padding:7px 10px;border-radius:999px;white-space:nowrap;font-family:var(--mono)}
-.ba .tagA,.ba .tagB{position:absolute;top:76px;   /* clear of the game's own top bar */font-family:var(--disp);font-size:17px;letter-spacing:.2em;
+.ba .tagA,.ba .tagB{position:absolute;top:76px;   /* clear of the game's own top bar */
+  font-family:var(--disp);font-size:20px;letter-spacing:.2em;
   background:rgba(12,9,6,.78);padding:8px 16px;border-radius:6px;text-transform:uppercase}
 .ba .tagA{left:16px;color:var(--crimson-hi)}
 .ba .tagB{right:16px;color:var(--gold-hi)}
@@ -142,8 +143,8 @@ table.tb{border-collapse:collapse;width:100%}
 .trk .pl.playing{background:var(--gold);color:#241b10}
 .trk .ti{flex:1;min-width:0}
 .trk .tn{font-family:var(--disp);font-weight:700;font-size:24px;color:var(--tx)}
-.trk .tg{font-size:20px;color:var(--tx3);font-style:italic;margin-top:3px}
-.trk .who{flex:none;font-size:20px;color:var(--gold);text-align:right}
+.trk .tg{font-size:22px;color:var(--tx3);font-style:italic;margin-top:3px}
+.trk .who{flex:none;font-size:22px;color:var(--gold);text-align:right}
 
 /* footer chrome */
 #bar{position:absolute;left:0;bottom:0;height:4px;background:linear-gradient(90deg,var(--gold-dim),var(--gold));width:0;transition:width .4s ease;z-index:50}
@@ -170,7 +171,7 @@ table.tb{border-collapse:collapse;width:100%}
 .tile{position:relative}
 .tile .tl{position:absolute;left:0;right:0;bottom:0;padding:14px 18px 12px;
   background:linear-gradient(0deg,rgba(10,7,4,.92),transparent);font-family:var(--disp);
-  font-size:19px;letter-spacing:.14em;color:var(--gold-hi);text-transform:uppercase;z-index:2}
+  font-size:22px;letter-spacing:.14em;color:var(--gold-hi);text-transform:uppercase;z-index:2}
 
 /* icon strip */
 .achrow{display:flex;gap:18px;justify-content:space-between}
@@ -185,7 +186,7 @@ table.tb{border-collapse:collapse;width:100%}
 
 .achgrid{display:grid;grid-template-columns:112px repeat(5,1fr);gap:12px;align-items:center}
 .achgrid img{width:100%;aspect-ratio:1;display:block;border-radius:10px;border:1px solid #4a3b24;box-shadow:0 10px 26px rgba(0,0,0,.4)}
-.achlbl{font-family:var(--disp);font-weight:700;font-size:14px;letter-spacing:.1em;color:var(--gold);text-transform:uppercase;text-align:right;white-space:nowrap}
+.achlbl{font-family:var(--disp);font-weight:700;font-size:16px;letter-spacing:.1em;color:var(--gold);text-transform:uppercase;text-align:right;white-space:nowrap}
 
 /* org chart */
 .org{display:flex;flex-direction:column;align-items:center;gap:0;flex:1;justify-content:center}
@@ -193,12 +194,12 @@ table.tb{border-collapse:collapse;width:100%}
 .node{background:linear-gradient(180deg,var(--panel-hi),var(--panel));border:1px solid #4a3b24;border-radius:12px;
   padding:20px 30px;text-align:center;min-width:220px}
 .node .nt{font-family:var(--disp);font-weight:700;font-size:25px;color:var(--gold-hi)}
-.node .nd{font-size:20px;color:var(--tx2);margin-top:6px;line-height:1.3}
+.node .nd{font-size:22px;color:var(--tx2);margin-top:6px;line-height:1.3}
 .node.me{border-color:var(--gold);box-shadow:0 0 34px rgba(217,168,78,.18)}
 .vline{width:2px;height:34px;background:var(--gold-dim)}
 .hfan{height:34px;width:72%;border:2px solid var(--gold-dim);border-bottom:none;border-radius:14px 14px 0 0}
 
-.footer-note{font-size:19px;color:var(--tx3);text-align:center;margin-top:18px;font-style:italic}
+.footer-note{font-size:24px;color:var(--tx3);text-align:center;margin-top:18px;font-style:italic}
 /* ---- the AMA easter egg: two of us walk on, high-five, and get summoned ---- */
 .egg{position:absolute;left:0;right:0;bottom:86px;height:190px;pointer-events:none;z-index:40;
   transform:scale(1.24);transform-origin:50% 100%}
@@ -273,7 +274,10 @@ a:hover{color:#fff0cf;text-decoration-color:var(--gold)}
       <div class="quote b" style="margin-top:20px">Relevant credential for tonight: in five weeks on this game, the number of lines of game code I typed by hand is <b>zero</b>.</div>
     </div>
     <div class="col" style="flex:1">
-      <div class="frame b"><img src="assets/img/art_uncle_jim_full.jpg" alt="Uncle Jim" style="max-height:640px;object-fit:cover"></div>
+      <!-- The portrait the game itself uses for Jim (boons, check-ins, the map), so
+           he arrives here exactly as a player meets him. -->
+      <img class="b" src="assets/img/uncle_jim_squirrel.png" alt="Uncle Jim in squirrel form"
+           style="max-height:660px;width:auto;align-self:center;filter:drop-shadow(0 26px 44px rgba(0,0,0,.65))">
       <div class="cap b">The unofficial mascot, Uncle Jim. He's a squirrel. We'll get to him.</div>
     </div>
   </div>
@@ -287,7 +291,9 @@ a:hover{color:#fff0cf;text-decoration-color:var(--gold)}
 </section>
 
 <!-- ============================================================ 4 WHAT IS WARLORDS -->
-<section class="slide" data-act="I · The Game">
+<!-- data-hold: land on the loop's setup with an empty grid, so step 1 is a beat you
+     take rather than something already on screen when you arrive. -->
+<section class="slide" data-hold data-act="I · The Game">
   <div class="kick"><span class="n">Act I · The Game</span></div>
   <h2>A roguelike deckbuilder where combat is an <em>autobattler</em></h2>
   <div class="sub" style="margin-bottom:34px">Slay the Spire's map. A card hand. Then the cards become <b>armies that fight on their own</b>.</div>
@@ -338,7 +344,7 @@ a:hover{color:#fff0cf;text-decoration-color:var(--gold)}
       <div class="cap">Every unique card. Painted faces, pop-out art, forged frames by type.</div></div>
     <div class="col" style="flex:1">
       <div class="chips b">
-        <span class="chip"><b>Burning</b></span><span class="chip"><b>Poison</b> + Contagion</span><span class="chip"><b>Hivemind</b></span>
+        <span class="chip"><b>Burning</b></span><span class="chip"><b>Poison + Contagion</b></span><span class="chip"><b>Hivemind</b></span>
         <span class="chip"><b>Undying</b></span><span class="chip"><b>Slime Merge</b></span><span class="chip"><b>Hatch</b></span>
         <span class="chip"><b>Ember Chain</b></span><span class="chip"><b>Sacrifice</b></span><span class="chip"><b>Channeling</b></span>
         <span class="chip"><b>Pack Tactics</b></span><span class="chip"><b>Formation</b></span><span class="chip"><b>Intangible</b></span>
@@ -364,7 +370,7 @@ a:hover{color:#fff0cf;text-decoration-color:var(--gold)}
 <!-- ============================================================ 9 BOSSES -->
 <section class="slide" data-act="I · The Game">
   <div class="kick">Bosses</div>
-  <h2>Break a boss and the fight <em>breaks back</em></h2>
+  <h2>Wound a boss and it <em>rewrites the fight</em></h2>
   <div class="row">
     <div class="col" style="flex:1.5"><div class="frame"><video src="assets/vid/bossintro.mp4" muted loop playsinline></video></div>
       <div class="cap">The banner reads THE DEAD RISE, and the dead rise.</div></div>
@@ -1164,7 +1170,7 @@ function show(i,revealAll){
   const bs=builds(slides[i]);
   slides[i].querySelectorAll('.b').forEach(b=>b.classList.toggle('on',revealAll||false));
   slides[i].dataset.bi=revealAll?bs.length:0;
-  if(!revealAll){ // auto-reveal first build for rhythm
+  if(!revealAll && !slides[i].hasAttribute('data-hold')){ // auto-reveal first build for rhythm
     step();
   }
   bar.style.width=((i+1)/slides.length*100)+'%';
