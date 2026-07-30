@@ -1,0 +1,1280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Warlords × AI — Paul Booth</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="How one person and a fleet of AI agents shipped a real Steam game in 35 days.">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="assets/img/favicon.png">
+<link rel="apple-touch-icon" href="assets/img/favicon.png">
+<link rel="stylesheet" href="assets/fonts/fonts.css">
+<style>
+/* ============ Forged & Furled — presentation tokens ============ */
+:root{
+  --bg0:#120e09; --bg1:#1c1610; --bg2:#241c13;
+  --panel:#231b12; --panel-hi:#2d2418;
+  --iron-hi:#453724; --iron-lo:#0c0906;
+  --gold:#d9a84e; --gold-hi:#f2cd7e; --gold-dim:#8a6d38;
+  --vellum:#e9dcbe; --vellum-dim:#c9b990; --ink:#241b10;
+  --crimson:#b03a34; --crimson-hi:#d4574e;
+  --green:#7da05a;
+  --tx:#efe4c8; --tx2:#c9b791; --tx3:#93805d;
+  --serif:'EB Garamond',Georgia,serif;
+  --disp:'Cinzel','Palatino Linotype',serif;
+  --mono:'Cascadia Code','Consolas',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;background:#000;overflow:hidden}
+body{font-family:var(--serif);color:var(--tx)}
+
+#viewport{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:#000}
+#stage{position:relative;width:1920px;height:1080px;flex:none;overflow:hidden;
+  background:radial-gradient(120% 90% at 50% 0%,var(--bg2) 0%,var(--bg1) 45%,var(--bg0) 100%)}
+
+/* ============ slides ============ */
+.slide{position:absolute;inset:0;padding:110px 140px;opacity:0;visibility:hidden;
+  transform:translateY(14px) scale(.992);transition:opacity .55s ease,transform .55s ease,visibility .55s;
+  display:flex;flex-direction:column}
+.slide.active{opacity:1;visibility:visible;transform:none}
+.slide.center{align-items:center;justify-content:center;text-align:center}
+
+/* builds */
+.b{opacity:0;transform:translateY(16px);transition:opacity .5s ease,transform .5s ease}
+.b.on{opacity:1;transform:none}
+
+/* typography */
+.kick{font-family:var(--disp);font-weight:700;font-size:21px;letter-spacing:.34em;color:var(--gold);text-transform:uppercase;margin-bottom:22px}
+.kick .n{color:var(--tx3)}
+h1{font-family:var(--disp);font-weight:900;font-size:88px;line-height:1.04;color:var(--tx);letter-spacing:.01em}
+h2{font-family:var(--disp);font-weight:700;font-size:54px;line-height:1.1;color:var(--tx);margin-bottom:14px}
+h2 em{font-style:normal;color:var(--gold-hi)}
+.sub{font-size:30px;color:var(--tx2);line-height:1.45;font-weight:400;max-width:1250px}
+.sub b{color:var(--gold-hi);font-weight:600}
+.small{font-size:22px;color:var(--tx3)}
+.gold{color:var(--gold-hi)}
+.crim{color:var(--crimson-hi)}
+
+/* divider slides */
+.divider .num{font-family:var(--disp);font-weight:500;font-size:44px;color:var(--gold-dim);letter-spacing:.5em;margin-bottom:8px}
+.divider h1{font-size:118px}
+.divider .rule{width:340px;height:2px;margin:38px auto 30px;
+  background:linear-gradient(90deg,transparent,var(--gold) 20%,var(--gold) 80%,transparent)}
+.divider .sub{font-size:32px;font-style:italic;color:var(--tx2)}
+
+/* layout helpers */
+.row{display:flex;gap:56px;align-items:center;flex:1;min-height:0}
+.col{display:flex;flex-direction:column;gap:22px;min-width:0}
+.grow{flex:1}
+.spacer{flex:1}
+
+/* framed media */
+.frame{border:1px solid #4a3b24;border-radius:10px;overflow:hidden;background:#000;
+  box-shadow:0 30px 80px rgba(0,0,0,.55),inset 0 0 0 1px rgba(242,205,126,.07)}
+.frame img,.frame video{display:block;width:100%;height:100%;object-fit:cover}
+.cap{font-size:20px;color:var(--tx3);font-style:italic;margin-top:12px;text-align:center}
+
+/* stat wall */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:26px;flex:1;align-content:center}
+.stat{background:linear-gradient(180deg,var(--panel-hi),var(--panel));border:1px solid #443622;border-radius:12px;
+  padding:30px 18px 26px;text-align:center;box-shadow:0 12px 30px rgba(0,0,0,.35)}
+.stat .v{font-family:var(--disp);font-weight:700;font-size:64px;color:var(--gold-hi);line-height:1}
+.stat .l{font-size:21px;color:var(--tx2);margin-top:12px;line-height:1.25}
+.stat.hero{grid-row:span 1}
+.stat.crim .v{color:var(--crimson-hi)}
+
+/* chips */
+.chips{display:flex;flex-wrap:wrap;gap:14px}
+.chip{background:var(--panel-hi);border:1px solid #4a3b24;border-radius:999px;
+  padding:10px 22px;font-size:23px;color:var(--tx);white-space:nowrap}
+.chip b{color:var(--gold-hi);font-weight:600}
+
+/* vellum cards (prompts) */
+.vell{background:linear-gradient(180deg,#efe3c4,#e2d3ac);color:var(--ink);border-radius:8px;
+  padding:24px 30px;box-shadow:0 14px 34px rgba(0,0,0,.45);border:1px solid #b7a074;position:relative}
+.vell .d{font-family:var(--disp);font-size:16px;letter-spacing:.22em;color:#7d6634;margin-bottom:10px;text-transform:uppercase}
+.vell .t{font-family:var(--mono);font-size:22.5px;line-height:1.5;white-space:pre-wrap;color:#241b10}
+.vell.sm .t{font-size:21px}
+
+/* dark code/quote card */
+.quote{background:var(--panel);border-left:4px solid var(--gold);border-radius:6px;padding:22px 30px;
+  font-style:italic;font-size:26px;color:var(--tx2);line-height:1.5}
+.quote b{color:var(--gold-hi);font-style:normal}
+
+/* flow diagram */
+.flow{display:flex;align-items:stretch;gap:0;flex-wrap:nowrap}
+.fstep{background:linear-gradient(180deg,var(--panel-hi),var(--panel));border:1px solid #4a3b24;border-radius:10px;
+  padding:20px 22px;text-align:center;flex:1;min-width:0}
+.fstep .fi{font-family:var(--disp);font-weight:700;font-size:24px;color:var(--gold-hi);margin-bottom:8px}
+.fstep .fd{font-size:20px;color:var(--tx2);line-height:1.35}
+.farr{align-self:center;color:var(--gold-dim);font-size:34px;padding:0 12px;flex:none}
+
+/* tables */
+table.tb{border-collapse:collapse;width:100%}
+.tb td,.tb th{padding:11px 18px;text-align:left;font-size:24px;border-bottom:1px solid #3a2e1c}
+.tb th{font-family:var(--disp);font-size:18px;letter-spacing:.18em;color:var(--gold);text-transform:uppercase;font-weight:700}
+.tb td.g{color:var(--gold-hi)}
+.tb td.mono{font-family:var(--mono);font-size:20px;color:var(--tx2)}
+
+/* before/after slider — sized by the height it is GIVEN, so a 16:9 pair always
+   lands whole inside the stage instead of being cropped by overflow:hidden */
+.baw{flex:1;min-height:0;display:flex;justify-content:center;align-items:center;margin-top:10px}
+.ba{position:relative;overflow:hidden;border-radius:10px;border:1px solid #4a3b24;cursor:ew-resize;
+  box-shadow:0 30px 80px rgba(0,0,0,.55);user-select:none;height:100%;aspect-ratio:1600/900;max-width:100%}
+.ba img{display:block;pointer-events:none}
+.ba .under{width:100%;height:100%;object-fit:cover}
+.ba .top img{height:100%;width:auto;max-width:none}
+.ba .top{position:absolute;inset:0;width:50%;overflow:hidden}
+.ba .handle{position:absolute;top:0;bottom:0;left:50%;width:3px;background:var(--gold);box-shadow:0 0 18px rgba(217,168,78,.8)}
+.ba .handle::after{content:'◂ ▸';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  background:var(--gold);color:#241b10;font-size:15px;padding:7px 10px;border-radius:999px;white-space:nowrap;font-family:var(--mono)}
+.ba .tagA,.ba .tagB{position:absolute;top:76px;   /* clear of the game's own top bar */font-family:var(--disp);font-size:17px;letter-spacing:.2em;
+  background:rgba(12,9,6,.78);padding:8px 16px;border-radius:6px;text-transform:uppercase}
+.ba .tagA{left:16px;color:var(--crimson-hi)}
+.ba .tagB{right:16px;color:var(--gold-hi)}
+
+/* audio cards */
+.trk{display:flex;align-items:center;gap:20px;background:linear-gradient(180deg,var(--panel-hi),var(--panel));
+  border:1px solid #4a3b24;border-radius:12px;padding:16px 22px}
+.trk .pl{flex:none;width:58px;height:58px;border-radius:50%;border:2px solid var(--gold);color:var(--gold-hi);
+  background:transparent;font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.2s}
+.trk .pl:hover{background:var(--gold);color:#241b10}
+.trk .pl.playing{background:var(--gold);color:#241b10}
+.trk .ti{flex:1;min-width:0}
+.trk .tn{font-family:var(--disp);font-weight:700;font-size:24px;color:var(--tx)}
+.trk .tg{font-size:20px;color:var(--tx3);font-style:italic;margin-top:3px}
+.trk .who{flex:none;font-size:20px;color:var(--gold);text-align:right}
+
+/* footer chrome */
+#bar{position:absolute;left:0;bottom:0;height:4px;background:linear-gradient(90deg,var(--gold-dim),var(--gold));width:0;transition:width .4s ease;z-index:50}
+#pgnum{position:absolute;right:26px;bottom:16px;font-family:var(--disp);font-size:16px;letter-spacing:.2em;color:var(--tx3);z-index:50}
+#acttag{position:absolute;left:26px;bottom:16px;font-family:var(--disp);font-size:16px;letter-spacing:.24em;color:var(--tx3);z-index:50;text-transform:uppercase}
+#embers{position:absolute;inset:0;pointer-events:none;z-index:5;opacity:0;transition:opacity 1.2s}
+#embers.on{opacity:1}
+#hint{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);font-size:15px;color:#6b5c40;z-index:50;
+  font-family:var(--mono);opacity:.8}
+
+/* title slide specifics */
+.titlebg{position:absolute;inset:0;background:url('assets/img/title_battlefield.jpg') center/cover;opacity:.34;
+  -webkit-mask-image:radial-gradient(90% 80% at 50% 40%,#000 30%,transparent 100%);
+  mask-image:radial-gradient(90% 80% at 50% 40%,#000 30%,transparent 100%)}
+.fullbg{position:absolute;inset:0;z-index:0}
+.fullbg img,.fullbg video{width:100%;height:100%;object-fit:cover}
+.veil{position:absolute;inset:0;background:linear-gradient(180deg,rgba(18,14,9,.25) 0%,rgba(18,14,9,.05) 40%,rgba(18,14,9,.88) 88%)}
+.overbg{position:relative;z-index:2}
+
+/* grids of media */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:26px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:26px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:22px}
+.tile{position:relative}
+.tile .tl{position:absolute;left:0;right:0;bottom:0;padding:14px 18px 12px;
+  background:linear-gradient(0deg,rgba(10,7,4,.92),transparent);font-family:var(--disp);
+  font-size:19px;letter-spacing:.14em;color:var(--gold-hi);text-transform:uppercase;z-index:2}
+
+/* icon strip */
+.achrow{display:flex;gap:18px;justify-content:space-between}
+.achrow img{width:118px;height:118px;border-radius:10px;border:1px solid #4a3b24;box-shadow:0 10px 26px rgba(0,0,0,.4)}
+/* a live web page, scrolling itself inside a framed window */
+.scrollpane{height:700px;overflow:hidden;border:1px solid #4a3b24;border-radius:10px;background:#1b2838;
+  box-shadow:0 30px 80px rgba(0,0,0,.55),inset 0 0 0 1px rgba(242,205,126,.07)}
+.scrollpane img{display:block;width:100%}
+.slide.active .scrollpane img{animation:pagescroll 46s ease-in-out infinite alternate}
+@keyframes pagescroll{from{transform:translateY(0)}to{transform:translateY(-995px)}}
+
+.achgrid{display:grid;grid-template-columns:112px repeat(5,1fr);gap:12px;align-items:center}
+.achgrid img{width:100%;aspect-ratio:1;display:block;border-radius:10px;border:1px solid #4a3b24;box-shadow:0 10px 26px rgba(0,0,0,.4)}
+.achlbl{font-family:var(--disp);font-weight:700;font-size:14px;letter-spacing:.1em;color:var(--gold);text-transform:uppercase;text-align:right;white-space:nowrap}
+
+/* org chart */
+.org{display:flex;flex-direction:column;align-items:center;gap:0;flex:1;justify-content:center}
+.orgrow{display:flex;gap:26px;justify-content:center}
+.node{background:linear-gradient(180deg,var(--panel-hi),var(--panel));border:1px solid #4a3b24;border-radius:12px;
+  padding:20px 30px;text-align:center;min-width:220px}
+.node .nt{font-family:var(--disp);font-weight:700;font-size:25px;color:var(--gold-hi)}
+.node .nd{font-size:20px;color:var(--tx2);margin-top:6px;line-height:1.3}
+.node.me{border-color:var(--gold);box-shadow:0 0 34px rgba(217,168,78,.18)}
+.vline{width:2px;height:34px;background:var(--gold-dim)}
+.hfan{height:34px;width:72%;border:2px solid var(--gold-dim);border-bottom:none;border-radius:14px 14px 0 0}
+
+.footer-note{font-size:19px;color:var(--tx3);text-align:center;margin-top:18px;font-style:italic}
+/* ---- the AMA easter egg: two of us walk on, high-five, and get summoned ---- */
+.egg{position:absolute;left:0;right:0;bottom:86px;height:190px;pointer-events:none;z-index:40;
+  transform:scale(1.24);transform-origin:50% 100%}
+.egg .w{position:absolute;left:50%;bottom:0;width:120px;margin-left:-60px;opacity:0}
+.egg .w svg{display:block;overflow:visible}
+.egg .tile{position:absolute;left:50%;bottom:2px;width:230px;height:78px;margin-left:-115px;opacity:0;border-radius:50%;
+  background:radial-gradient(ellipse at 50% 50%,rgba(226,204,255,.95) 0%,rgba(140,86,214,.8) 40%,rgba(74,36,132,.45) 62%,rgba(74,36,132,0) 74%);
+  box-shadow:0 0 46px rgba(168,116,246,.8),inset 0 0 26px rgba(255,255,255,.55)}
+.egg .tile::after{content:'';position:absolute;inset:16px 30px;border-radius:50%;
+  border:2px solid rgba(244,232,255,.9);box-shadow:0 0 18px rgba(206,168,255,.9)}
+.egg .spark{position:absolute;left:50%;bottom:52px;width:130px;height:130px;margin-left:-65px;opacity:0;
+  background:radial-gradient(circle,rgba(255,245,214,.95) 0%,rgba(242,205,126,.7) 28%,rgba(217,168,78,0) 68%)}
+.egg.go .wl{animation:eggL 6.6s cubic-bezier(.3,.7,.4,1) forwards}
+.egg.go .wr{animation:eggR 6.6s cubic-bezier(.3,.7,.4,1) forwards}
+.egg.go .w svg{animation:eggBob .44s ease-in-out 7 alternate}
+.egg.go .spark{animation:eggSpark 1.1s ease-out 2.9s forwards}
+.egg.go .tile{animation:eggTile 3s ease-out 4s forwards}
+@keyframes eggBob{from{transform:translateY(0)}to{transform:translateY(-7px)}}
+@keyframes eggL{
+  0%{transform:translate(-980px,0) scale(1);opacity:0}
+  4%{opacity:1}
+  45%{transform:translate(-64px,0) scale(1);opacity:1}
+  52%{transform:translate(-50px,-9px) scale(1.04)}
+  60%{transform:translate(-62px,0) scale(1)}
+  72%{transform:translate(-62px,0) scale(1);opacity:1}
+  86%{transform:translate(-26px,-96px) scale(.7);opacity:1}
+  97%{transform:translate(0,16px) scale(.12);opacity:.85}
+  100%{transform:translate(0,26px) scale(.04);opacity:0}}
+@keyframes eggR{
+  0%{transform:translate(980px,0) scale(1);opacity:0}
+  4%{opacity:1}
+  45%{transform:translate(64px,0) scale(1);opacity:1}
+  52%{transform:translate(50px,-9px) scale(1.04)}
+  60%{transform:translate(62px,0) scale(1)}
+  72%{transform:translate(62px,0) scale(1);opacity:1}
+  86%{transform:translate(26px,-96px) scale(.7);opacity:1}
+  97%{transform:translate(0,16px) scale(.12);opacity:.85}
+  100%{transform:translate(0,26px) scale(.04);opacity:0}}
+@keyframes eggSpark{0%{opacity:0;transform:scale(.3)}22%{opacity:1;transform:scale(1.1)}100%{opacity:0;transform:scale(1.6)}}
+@keyframes eggTile{0%{opacity:0;transform:scale(.35)}18%{opacity:1;transform:scale(1.06)}26%{transform:scale(1)}
+  60%{opacity:1;transform:scale(1.08)}74%{opacity:1;transform:scale(.88)}100%{opacity:0;transform:scale(.2)}}
+
+a{color:var(--gold-hi);text-decoration:underline;text-decoration-color:var(--gold-dim);text-underline-offset:5px;
+  text-decoration-thickness:1px;cursor:pointer;transition:color .2s,text-decoration-color .2s}
+a:hover{color:#fff0cf;text-decoration-color:var(--gold)}
+</style>
+</head>
+<body>
+<div id="viewport"><div id="stage">
+
+<!-- ============================================================ 1 TITLE -->
+<section class="slide center" data-embers data-act="">
+  <div class="titlebg"></div>
+  <div class="overbg" style="display:flex;flex-direction:column;align-items:center">
+    <img src="assets/img/library_logo_1280.png" alt="Warlords" style="width:860px;filter:drop-shadow(0 12px 40px rgba(0,0,0,.8))">
+    <div style="font-family:var(--disp);font-size:30px;letter-spacing:.30em;color:var(--gold-hi);margin-top:44px;text-transform:uppercase">Every card is an army</div>
+    <div class="divider" style="margin-top:8px"><div class="rule"></div></div>
+    <div class="sub" style="font-size:34px">One human. A fleet of AI agents. <b>35 days.</b></div>
+    <div class="small" style="margin-top:70px;font-family:var(--disp);letter-spacing:.22em;text-transform:uppercase">Paul Booth · for the ByteDance crew · July 2026</div>
+  </div>
+</section>
+
+<!-- ============================================================ 2 ABOUT -->
+<section class="slide" data-act="">
+  <div class="kick">Introductions</div>
+  <div class="row">
+    <div class="col" style="flex:1.2">
+      <h2>Hi, I'm <em>Paul Booth</em>.</h2>
+      <div class="sub b">Most recently <b>Sr. Engineering Manager at Reddit</b>, leading 50+ engineers and managers across Consumer Growth and Advertising.</div>
+      <div class="sub b">Olin College of Engineering. Lifelong tinkerer who lives by <b style="white-space:nowrap">“Do, Make, Learn.”</b></div>
+      <div class="sub b">Matt's friend. He said you like games and fast prototypes, so I brought both.</div>
+      <div class="quote b" style="margin-top:20px">Relevant credential for tonight: in five weeks on this game, the number of lines of game code I typed by hand is <b>zero</b>.</div>
+    </div>
+    <div class="col" style="flex:1">
+      <div class="frame b"><img src="assets/img/art_uncle_jim_full.jpg" alt="Uncle Jim" style="max-height:640px;object-fit:cover"></div>
+      <div class="cap b">The unofficial mascot, Uncle Jim. He's a squirrel. We'll get to him.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ 3 THE QUESTION -->
+<section class="slide center" data-embers data-act="">
+  <div class="kick">The premise</div>
+  <h1 style="max-width:1500px">What does game development look like when you <span class="gold">stop writing the code?</span></h1>
+  <div class="sub b" style="margin-top:48px;font-size:32px">I played the roles of <b>QA engineer</b>, <b>game director</b>, and <b>engineering manager</b>.<br>AI agents played everyone else.</div>
+</section>
+
+<!-- ============================================================ 4 WHAT IS WARLORDS -->
+<section class="slide" data-act="I · The Game">
+  <div class="kick"><span class="n">Act I — The Game</span></div>
+  <h2>A roguelike deckbuilder where combat is an <em>autobattler</em></h2>
+  <div class="sub" style="margin-bottom:34px">Slay the Spire's map. A card hand. Then the cards become <b>armies that fight on their own</b>.</div>
+  <div class="g4" style="flex:1;align-content:center">
+    <div class="tile b"><div class="frame"><video src="assets/vid/draft.mp4" muted loop playsinline></video></div><div class="tl">1 · Draft packs</div></div>
+    <div class="tile b"><div class="frame"><video src="assets/vid/map.mp4" muted loop playsinline></video></div><div class="tl">2 · Climb the map</div></div>
+    <div class="tile b"><div class="frame"><video src="assets/vid/summon.mp4" muted loop playsinline></video></div><div class="tl">3 · Deploy your hand</div></div>
+    <div class="tile b"><div class="frame"><video src="assets/vid/clash.mp4" muted loop playsinline></video></div><div class="tl">4 · Ten seconds of war</div></div>
+  </div>
+  <div class="footer-note b">Each turn: spend energy, drop squads into lanes, cast spells — then the battle resolves in real time. Kill the enemy commander before yours falls.</div>
+</section>
+
+<!-- ============================================================ 5 WATCH -->
+<section class="slide" data-act="I · The Game" style="padding:0">
+  <div class="fullbg"><video src="assets/vid/clash.mp4" muted loop playsinline></video><div class="veil"></div></div>
+  <div class="overbg" style="margin-top:auto;padding:0 140px 90px">
+    <h2 style="font-size:64px">This is one <em>turn</em>.</h2>
+    <div class="sub">Both sides deploy, then the lanes resolve — pathfinding, statuses, on-death chains, boss phases — in about ten seconds.</div>
+  </div>
+</section>
+
+<!-- ============================================================ 6 STAT WALL -->
+<section class="slide" data-act="I · The Game">
+  <div class="kick">What five weeks bought</div>
+  <h2>The game, by the numbers</h2>
+  <div class="stats">
+    <div class="stat b"><div class="v">35</div><div class="l">days, first commit to tonight</div></div>
+    <div class="stat b"><div class="v">1,421</div><div class="l">commits on main</div></div>
+    <div class="stat b"><div class="v">563</div><div class="l">cards across 21 draftable packs</div></div>
+    <div class="stat b"><div class="v">274</div><div class="l">relics</div></div>
+    <div class="stat b"><div class="v">41</div><div class="l">named enemy warlords — no filler</div></div>
+    <div class="stat b"><div class="v">129</div><div class="l">hand-written events, each with painted art</div></div>
+    <div class="stat b"><div class="v">74×2</div><div class="l">original songs — every one with an instrumental twin</div></div>
+    <div class="stat b"><div class="v">78</div><div class="l">Steam achievements, icons included</div></div>
+    <div class="stat b"><div class="v">11</div><div class="l">languages — 7,063 strings each</div></div>
+    <div class="stat b"><div class="v">4-player</div><div class="l">online co-op, Steam or direct IP</div></div>
+    <div class="stat b"><div class="v">119,020</div><div class="l">lines of GDScript — and only 4 hand-authored scenes</div></div>
+    <div class="stat b crim"><div class="v">0</div><div class="l">lines of game code written by hand</div></div>
+  </div>
+</section>
+
+<!-- ============================================================ 7 CARDS -->
+<section class="slide" data-act="I · The Game">
+  <div class="kick"><span class="n">Act I — The Game</span></div>
+  <h2>Deep, keyword-driven combat</h2>
+  <div class="row">
+    <div class="col" style="flex:1.35"><div class="frame"><img src="assets/img/all_uniques.jpg" alt="unique cards"></div>
+      <div class="cap">Every unique card — painted faces, pop-out art, forged frames by type.</div></div>
+    <div class="col" style="flex:1">
+      <div class="chips b">
+        <span class="chip"><b>Burning</b></span><span class="chip"><b>Poison</b> + Contagion</span><span class="chip"><b>Hivemind</b></span>
+        <span class="chip"><b>Undying</b></span><span class="chip"><b>Slime Merge</b></span><span class="chip"><b>Hatch</b></span>
+        <span class="chip"><b>Ember Chain</b></span><span class="chip"><b>Sacrifice</b></span><span class="chip"><b>Channeling</b></span>
+        <span class="chip"><b>Pack Tactics</b></span><span class="chip"><b>Formation</b></span><span class="chip"><b>Intangible</b></span>
+      </div>
+      <div class="sub b" style="font-size:26px"><b>375 summons · 130 spells · 58 powers</b> — plus traps, hazards, turrets, barricades. <b>68 unit keywords</b>, 15 statuses, 75 stacking battle powers.</div>
+      <div class="sub b" style="font-size:26px">Every keyword carries its number — <b>“Shield 2”</b>, never “some shield”. House rule, enforced by an audit script.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ 8 LORDS -->
+<section class="slide" data-act="I · The Game" style="padding:0">
+  <div class="fullbg"><img src="assets/img/lords_gallery.jpg" style="object-fit:contain;background:#0b0805"><div class="veil"></div></div>
+  <div class="overbg" style="margin-top:auto;padding:0 140px 80px;display:flex;align-items:flex-end;gap:50px">
+    <div>
+      <h2 style="font-size:60px"><em>41</em> named enemy warlords</h2>
+      <div class="sub">Each with its own army, arena, taunts, signature spells — and its own theme song. Many are living, multi-piece animated rigs.</div>
+    </div>
+    <div class="frame b" style="width:420px;flex:none"><video src="assets/vid/lords.mp4" muted loop playsinline></video></div>
+  </div>
+</section>
+
+<!-- ============================================================ 9 BOSSES -->
+<section class="slide" data-act="I · The Game">
+  <div class="kick">Bosses</div>
+  <h2>Break a boss and the fight <em>breaks back</em></h2>
+  <div class="row">
+    <div class="col" style="flex:1.5"><div class="frame"><video src="assets/vid/bossintro.mp4" muted loop playsinline></video></div>
+      <div class="cap">Mid-clash phase break: THE DEAD RISE — and the dead rise.</div></div>
+    <div class="col" style="flex:1">
+      <div class="sub b" style="font-size:27px"><b>Boss phases</b> — at half health the arena recoils, a cinematic names what changed, and the rules change with it.</div>
+      <div class="sub b" style="font-size:27px"><b>Twin commanders</b> — some lords come in pairs; both must fall.</div>
+      <div class="sub b" style="font-size:27px"><b>Second forms</b> — six bosses have hand-built “woken” rigs that take over mid-fight.</div>
+      <div class="sub b" style="font-size:27px"><b>Signature spells</b> — 41 enemy spells with painted card faces, aimed at your commander.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ 10 ARENAS -->
+<section class="slide" data-act="I · The Game">
+  <div class="kick">Battlefields</div>
+  <h2>No two fields are the same</h2>
+  <div class="row">
+    <div class="col" style="flex:1">
+      <div class="chips b">
+        <span class="chip">Arctic</span><span class="chip">Volcano</span><span class="chip">Necropolis</span><span class="chip">Sporewood</span>
+        <span class="chip">Gallows Court</span><span class="chip">Crystal Cavern</span><span class="chip"><b>…30 themes</b></span>
+      </div>
+      <div class="sub b" style="font-size:27px">Procedural arenas, seeded per map node: <b>2–5 lanes</b> that bend, <b>18 terrain kinds</b> — bog, ice, high ground — destructible obstacles, and <b>14 battle-wide conditions</b> like Emberfall and The Long Night.</div>
+      <div class="sub b" style="font-size:27px">Bosses get bespoke arenas tuned to their gimmick.</div>
+    </div>
+    <div class="col" style="flex:1.5"><div class="frame"><video src="assets/vid/arenas.mp4" muted loop playsinline></video></div>
+      <div class="cap">The same clash across five biomes.</div></div>
+  </div>
+</section>
+
+<!-- ============================================================ 11 EVENTS -->
+<section class="slide" data-act="I · The Game">
+  <div class="kick">Between battles</div>
+  <h2>The events are <em>unhinged</em> — and you actually play them</h2>
+  <div class="row" style="gap:30px">
+    <div class="col" style="flex:1.35">
+      <div class="g3">
+        <div class="tile b"><div class="frame"><video src="assets/vid/wheel.mp4" muted loop playsinline></video></div><div class="tl">Wheel of Fate</div></div>
+        <div class="tile b"><div class="frame"><img src="assets/shots/minigame_dice_settled.jpg" style="max-height:250px"></div><div class="tl">Knucklebones duel</div></div>
+        <div class="tile b"><div class="frame"><img src="assets/img/ev_slots.jpg" style="max-height:250px"></div><div class="tl">One-Armed Bandit</div></div>
+        <div class="tile b"><div class="frame"><img src="assets/img/ev_casino.jpg" style="max-height:250px"></div><div class="tl">Bone Casino</div></div>
+        <div class="tile b"><div class="frame"><img src="assets/img/ev_shell.jpg" style="max-height:250px"></div><div class="tl">Shell Swindler</div></div>
+        <div class="tile b"><div class="frame"><img src="assets/img/ev_double.jpg" style="max-height:250px"></div><div class="tl">Double or Nothing</div></div>
+      </div>
+    </div>
+    <div class="col" style="flex:1">
+      <div class="sub b" style="font-size:26px"><b>129</b> choose-your-own-adventure events — and <b>a dozen of them are real minigames</b>, played live for keeps:</div>
+      <div class="chips b">
+        <span class="chip"><b>Jump rope</b></span><span class="chip"><b>3-D physics dice</b></span><span class="chip"><b>Rhythm</b></span>
+        <span class="chip"><b>Simon</b></span><span class="chip"><b>Jigsaw</b></span><span class="chip"><b>Auction</b></span>
+        <span class="chip"><b>Press-your-luck</b></span><span class="chip"><b>Slots</b></span><span class="chip"><b>Pachinko</b></span>
+        <span class="chip"><b>Shell game</b></span>
+      </div>
+      <div class="sub b" style="font-size:25px">The dice are rigid-body physics. The wheel is honest. The mimic <b>lures you</b> with treasure. Every event has bespoke painted art — all 129 of them.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ 12 SPELLS/RELICS -->
+<section class="slide" data-act="I · The Game">
+  <div class="kick">The toolbox</div>
+  <h2>Spells, relics, potions</h2>
+  <div class="row">
+    <div class="col" style="flex:1.5"><div class="frame"><video src="assets/vid/spell.mp4" muted loop playsinline></video></div>
+      <div class="cap">Meteor Storm, with a live area preview before you commit.</div></div>
+    <div class="col" style="flex:1">
+      <div class="sub b" style="font-size:27px"><b>274</b> relics in five pools — passive, triggered, build-around — shown as inline icons in the run bar, each linking the card it names.</div>
+      <div class="sub b" style="font-size:27px"><b>130 spells</b>, <b>33 potions</b>. Spells strike units <b>or the enemy commander directly</b> — a rule the whole enemy AI had to learn too.</div>
+      <div class="sub b" style="font-size:27px">Commander healing is deliberately <b>scarce</b>. Every point matters.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ 13 PAPER DOLL -->
+<section class="slide" data-act="I · The Game">
+  <div class="kick">Your commander</div>
+  <h2>A <em>paper doll</em> assembled from your draft</h2>
+  <div class="row">
+    <div class="col" style="flex:1">
+      <div class="sub b" style="font-size:27px">Every pack you draft contributes <b>one body part</b> — head, torso, arms, legs, accessory — so every run's commander looks like what you're playing.</div>
+      <div class="sub b" style="font-size:27px">All vector art, re-rasterized at true size for cinematics. <b>36 part sets</b>, each with a gilded mastery variant.</div>
+      <div class="sub b" style="font-size:27px">Five playable warlords — king, mummy, spaceman and friends — each with a signature relic and starting deck.</div>
+    </div>
+    <div class="col" style="flex:1.5"><div class="frame"><video src="assets/vid/draft.mp4" muted loop playsinline></video></div>
+      <div class="cap">The doll re-dresses itself as you pick.</div></div>
+  </div>
+</section>
+
+<!-- ============================================================ 14 PROGRESSION -->
+<section class="slide" data-act="I · The Game">
+  <div class="kick">Meta-progression</div>
+  <h2>Reasons to come back</h2>
+  <div class="row">
+    <div class="col" style="flex:1">
+      <div class="sub b" style="font-size:25px"><b>Pack XP → unlock cards.</b> Win with a pack, level it, open its next cards.</div>
+      <div class="sub b" style="font-size:25px"><b>Pack Paths.</b> At levels 4/5/6 each pack branches — pick a doctrine and its cards <b>transform</b>.</div>
+      <div class="sub b" style="font-size:25px"><b>Ascendant looks.</b> Master a pack fully and its gilded cosmetic set is yours — 21 matching achievements.</div>
+      <div class="sub b" style="font-size:25px"><b>Compendium</b> that fills in as you discover. <b>Daily March</b> — one seeded run a day, on a Steam leaderboard. <b>10 ascension tiers</b> when it gets too easy.</div>
+      <div class="frame b"><video src="assets/vid/unlock.mp4" muted loop playsinline style="max-height:240px"></video></div>
+    </div>
+    <div class="col" style="flex:1.4;gap:12px">
+      <div class="frame b" style="max-height:330px"><img src="assets/shots/charselect_1.jpg" style="object-fit:cover;object-position:top"></div>
+      <div class="cap b" style="margin-top:0">Five playable warlords — win with one to wake the next.</div>
+      <div class="frame b" style="max-height:300px"><img src="assets/shots/ascendant_1.jpg" style="object-fit:cover;object-position:top"></div>
+      <div class="cap b" style="margin-top:0">Every pack's commander in three looks: Battleworn, Gilded, Ascendant.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ 15 COOP -->
+<section class="slide" data-act="I · The Game">
+  <div class="kick">Multiplayer</div>
+  <h2>Full 4-player online <em>co-op</em></h2>
+  <div class="row">
+    <div class="col" style="flex:1.5"><div class="frame"><video src="assets/vid/coop.mp4" muted loop playsinline></video></div>
+      <div class="cap">Shared clashes — allied squads, slot-colored pings and aim arrows.</div></div>
+    <div class="col" style="flex:1">
+      <div class="sub b" style="font-size:25px"><b>Host-authoritative netcode</b> — one real simulation, clients render 12 Hz snapshots. Solo play is byte-identical to the local path.</div>
+      <div class="sub b" style="font-size:25px"><b>Steam lobbies or direct IP</b> with UPnP auto-port-forward — co-op works even without Steam.</div>
+      <div class="sub b" style="font-size:25px">Map <b>voting</b>, claim-a-seat resume, mid-battle rejoin, live presence — watch an ally's fight and <b>suggest the card</b> they should play. <b>76 message types</b> in the protocol.</div>
+      <div class="g2 b" style="gap:14px">
+        <div class="tile"><div class="frame"><img src="assets/shots/coop_lobby.jpg"></div><div class="tl">The War Council</div></div>
+        <div class="tile"><div class="frame"><img src="assets/shots/emotes_dance.jpg"></div><div class="tl">Emote wheel · 461 lines</div></div>
+      </div>
+      <div class="sub b" style="font-size:25px">Even the <b>demo</b> has co-op.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ 16 QOL -->
+<section class="slide" data-act="I · The Game">
+  <div class="kick">The details</div>
+  <h2>Quality of life, obsessively</h2>
+  <div class="stats" style="grid-template-columns:repeat(3,1fr)">
+    <div class="stat b"><div class="v" style="font-size:34px">Vocals ⇄ Instrumental</div><div class="l">every song swaps mid-note — same take, stem-split, 60 ms dip. Toggle it whenever lyrics distract.</div></div>
+    <div class="stat b"><div class="v" style="font-size:34px">11 languages</div><div class="l">CJK fonts included; locale screenshots audited for tofu and overflow</div></div>
+    <div class="stat b"><div class="v" style="font-size:34px">Any gamepad</div><div class="l">sticks drive a virtual pointer — every screen playable from the couch</div></div>
+    <div class="stat b"><div class="v" style="font-size:34px">Accessibility</div><div class="l">text size to Huge, reduce motion, colorblind-safe change marks</div></div>
+    <div class="stat b"><div class="v" style="font-size:34px">Autosave</div><div class="l">every map node; co-op runs resume with claim-a-seat</div></div>
+    <div class="stat b"><div class="v" style="font-size:34px">Touch</div><div class="l">mobile builds: drag-to-play, safe-area insets, pinch pan</div></div>
+  </div>
+</section>
+
+<!-- ============================================================ 17 SHIPPING SURFACE -->
+<section class="slide" data-act="I · The Game">
+  <div class="kick">Where it lives</div>
+  <h2>A real product surface, not a prototype</h2>
+  <div class="row">
+    <div class="col" style="flex:1.1">
+      <div class="frame b"><img src="assets/img/capsule_main_1232x706.jpg"></div>
+      <div class="cap b">Steam: main app · free demo · soundtrack DLC — three store pages, all approved.</div>
+    </div>
+    <div class="col" style="flex:1">
+      <div class="frame b"><img src="assets/img/trading_cards_sheet.jpg" style="max-height:420px;object-fit:contain;background:#0b0805"></div>
+      <div class="cap b">Full trading-card set: 15 cards, badges, emoticons, backgrounds.</div>
+    </div>
+    <div class="col" style="flex:.8">
+      <div class="achrow b" style="flex-wrap:wrap;gap:14px;justify-content:flex-start">
+        <img src="assets/img/ach/ACH_BOSS_LICH.jpg"><img src="assets/img/ach/ACH_BOSS_TREANT.jpg">
+        <img src="assets/img/ach/ACH_TWINS.jpg"><img src="assets/img/ach/ACH_CASINO.jpg">
+        <img src="assets/img/ach/ACH_JIM_SENDOFF.jpg"><img src="assets/img/ach/ACH_LORDS_ALL.jpg">
+      </div>
+      <div class="cap b">78 achievements. Plus itch.io, a web build, and Android/iOS export targets.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ 18 DIVIDER II -->
+<section class="slide center divider" data-embers data-act="II · The Factory">
+  <div class="num">ACT II</div>
+  <h1>The Factory</h1>
+  <div class="rule"></div>
+  <div class="sub">How one person ships like a studio: turn the studio into software.</div>
+</section>
+
+<!-- ============================================================ 19 ORG CHART -->
+<section class="slide" data-act="II · The Factory">
+  <div class="kick">The org chart</div>
+  <h2>One human, <em>many agents</em></h2>
+  <div class="org">
+    <div class="node me b"><div class="nt">Me</div><div class="nd">direction · taste · QA · priorities</div></div>
+    <div class="vline b"></div>
+    <div class="hfan b"></div>
+    <div class="orgrow b" style="margin-top:0">
+      <div class="node"><div class="nt">Worker agents ×10</div><div class="nd">GitHub tickets, isolated git worktrees, parallel</div></div>
+      <div class="node"><div class="nt">Verifiers</div><div class="nd">281 test &amp; screenshot drivers, 14 zero-tolerance audits</div></div>
+      <div class="node"><div class="nt">The Simulator</div><div class="nd">an AI that plays the whole game, hundreds of runs</div></div>
+      <div class="node"><div class="nt">Ship robots</div><div class="nd">Steam, itch, partner-site automation, Cloudflare</div></div>
+    </div>
+    <div class="quote b" style="margin-top:44px;max-width:1250px">The management problem is identical to a real team: write clear tickets, keep workers out of each other's way, demand evidence, merge fast.</div>
+  </div>
+</section>
+
+<!-- ============================================================ 20 TICKETS -->
+<section class="slide" data-act="II · The Factory">
+  <div class="kick">The pipeline</div>
+  <h2>GitHub issues in, merged PRs out</h2>
+  <div class="spacer"></div>
+  <div class="flow b" style="margin:40px 0 30px">
+    <div class="fstep"><div class="fi">/ticket</div><div class="fd">work filed as issues, sized S / M / L</div></div><div class="farr">→</div>
+    <div class="fstep"><div class="fi">/dispatch</div><div class="fd">claims ready tickets, spawns up to 10 workers</div></div><div class="farr">→</div>
+    <div class="fstep"><div class="fi">worktree</div><div class="fd">each agent codes in an isolated checkout</div></div><div class="farr">→</div>
+    <div class="fstep"><div class="fi">verify</div><div class="fd">PR must carry VERIFIED evidence</div></div><div class="farr">→</div>
+    <div class="fstep"><div class="fi">merge</div><div class="fd">auto-merge, then smoke-test main</div></div>
+  </div>
+  <div class="row" style="flex:none;gap:26px;align-items:stretch">
+    <div class="stat b grow"><div class="v">105</div><div class="l">issues filed</div></div>
+    <div class="stat b grow"><div class="v">173</div><div class="l">PRs merged</div></div>
+    <div class="stat b grow"><div class="v">10</div><div class="l">agents in parallel at peak</div></div>
+    <div class="stat b grow"><div class="v">S/M/L</div><div class="l">size labels pick the model — small tickets batch 5-up on a cheaper one</div></div>
+  </div>
+  <div class="footer-note b">No verification evidence in the PR? It parks as needs-review. Humans only touch what asks for taste.</div>
+  <div class="spacer"></div>
+</section>
+
+<!-- ============================================================ 21 VERIFICATION -->
+<section class="slide" data-act="II · The Factory">
+  <div class="kick">Trust, but verify</div>
+  <h2>Agents must <em>prove</em> their work</h2>
+  <div class="row">
+    <div class="col" style="flex:1">
+      <div class="sub b" style="font-size:26px"><b>119 test drivers</b> that play real battles headlessly and assert outcomes.</div>
+      <div class="sub b" style="font-size:26px"><b>130 screenshot drivers</b> — the agent launches the game, frames the feature, and attaches the picture to its PR.</div>
+      <div class="sub b" style="font-size:26px"><b>14 audits with zero tolerance</b> — every card has painted art, no text overflows a card face, no missing translation, no unlinked relic. The number must be 0.</div>
+      <div class="sub b" style="font-size:26px">A watchdog autoload kills stray game processes agents leave behind — and parks their windows off-screen, muted, so they never interrupt <b>me playing</b>.</div>
+    </div>
+    <div class="col" style="flex:1.25">
+      <div class="frame b"><img src="assets/img/hover_lift.jpg"></div>
+      <div class="cap b">A screenshot-driver capture: proof the card-lift hover works, straight into the PR.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ 22 SIMULATOR -->
+<section class="slide" data-act="II · The Factory">
+  <div class="kick">Balance at scale</div>
+  <h2>An AI that plays the <em>whole game</em></h2>
+  <div class="row">
+    <div class="col" style="flex:1.15">
+      <div class="sub b" style="font-size:26px">The headless simulator drafts packs, routes the map, fights every battle with relics and boss phases live — <b>hundreds of full runs in parallel.</b></div>
+      <div class="sub b" style="font-size:26px"><b>A/B testing with paired seeds</b> and McNemar's test — balance changes ship with a p-value.</div>
+      <div class="sub b" style="font-size:26px"><b>Card lab</b>: measure one card causally — same deck, with and without it.</div>
+      <div class="sub b" style="font-size:26px">Calibrated against <b>live playtester telemetry</b>; tuning only moves when sim and reality agree.</div>
+    </div>
+    <div class="col" style="flex:1">
+      <div class="vell b"><div class="d">sim gate · pre-ship</div><div class="t">PASS  win-rate 61% (target 55–70)
+act1 boss clears: 78%   act3: 44%
+worst pack: Trapworks 41% → ticket filed
+archived → results/sim_history/</div></div>
+      <div class="footer-note b">Three minutes, PASS or FAIL, before every build ships.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ 23 SHIP PIPELINE -->
+<section class="slide" data-act="II · The Factory">
+  <div class="kick">Release engineering</div>
+  <h2>One command → <em>everywhere</em></h2>
+  <div class="spacer"></div>
+  <div class="flow b" style="margin:36px 0">
+    <div class="fstep"><div class="fi">version</div><div class="fd">stamp project + all presets</div></div><div class="farr">→</div>
+    <div class="fstep"><div class="fi">export</div><div class="fd">headless Godot: Win · macOS · Linux · Web · Android · iOS</div></div><div class="farr">→</div>
+    <div class="fstep"><div class="fi">sign</div><div class="fd">macOS sign + notarize, from Windows</div></div><div class="farr">→</div>
+    <div class="fstep"><div class="fi">upload</div><div class="fd">steamcmd → Steam · butler → itch</div></div><div class="farr">→</div>
+    <div class="fstep"><div class="fi">live</div><div class="fd">playtest branch auto-set-live</div></div>
+  </div>
+  <div class="row" style="flex:none">
+    <div class="quote b grow">Three Steam apps ride this: the game, the demo, and the soundtrack. The web build re-imports every texture lossy first — a full mirrored project — so the itch build stays small while desktop stays lossless.</div>
+  </div>
+  <div class="footer-note b">“pull down the latest, then push up a new build to steam, itch, android, demo, everywhere” — an actual prompt. That's the whole release process.</div>
+  <div class="spacer"></div>
+</section>
+
+<!-- ============================================================ 24 STEAMWORKS -->
+<section class="slide" data-act="II · The Factory">
+  <div class="kick">The parts with no API</div>
+  <h2>When Valve has no API, <em>drive the browser</em></h2>
+  <div class="row">
+    <div class="col" style="flex:1.2">
+      <div class="sub b" style="font-size:26px">The Steamworks partner site is forms and checkboxes — so <b>~25 Playwright scripts</b> share one logged-in browser profile and fill it like a very patient intern.</div>
+      <div class="sub b" style="font-size:26px"><b>78 achievements + 4 stats</b>: created, saved, re-opened, icons attached — the site won't take an icon before the first save. The script knows.</div>
+      <div class="sub b" style="font-size:26px">Store copy pushed in <b>10 languages</b>; achievement titles localized from the game's own catalogs; a <b>693 MB soundtrack ZIP</b> uploaded through the site's XHR flow.</div>
+      <div class="sub b" style="font-size:26px;color:var(--gold-hi)">Nothing auto-publishes. The Publish button stays human.</div>
+    </div>
+    <div class="col" style="flex:.9">
+      <div class="achgrid b">
+        <div class="achlbl">Unlocked</div>
+        <img src="assets/img/ach/ACH_BOSS_COLOSSUS.jpg"><img src="assets/img/ach/ACH_BOSS_WINTER.jpg">
+        <img src="assets/img/ach/ACH_BOSS_TREANT.jpg"><img src="assets/img/ach/ACH_TWINS.jpg">
+        <img src="assets/img/ach/ACH_JIM_SENDOFF.jpg">
+        <div class="achlbl">Locked</div>
+        <img src="assets/img/ach/ACH_BOSS_COLOSSUS_locked.jpg"><img src="assets/img/ach/ACH_BOSS_WINTER_locked.jpg">
+        <img src="assets/img/ach/ACH_BOSS_TREANT_locked.jpg"><img src="assets/img/ach/ACH_TWINS_locked.jpg">
+        <img src="assets/img/ach/ACH_JIM_SENDOFF_locked.jpg">
+      </div>
+      <div class="cap b">Every icon ships as a pair, sliced from 4×4 generated grids; the locked variant is one line of grayscale.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ 25 FEEDBACK -->
+<section class="slide" data-act="II · The Factory">
+  <div class="kick">Closing the loop</div>
+  <h2>Playtesters → Cloudflare → <em>tickets</em></h2>
+  <div class="spacer"></div>
+  <div class="flow b" style="margin:36px 0">
+    <div class="fstep"><div class="fi">in-game panel</div><div class="fd">feedback + auto-screenshot + the last battle's data</div></div><div class="farr">→</div>
+    <div class="fstep"><div class="fi">Worker + D1</div><div class="fd">one Cloudflare Worker ingests feedback and telemetry</div></div><div class="farr">→</div>
+    <div class="fstep"><div class="fi">/triage-feedback</div><div class="fd">an agent fixes the safe ones same-day, backlogs the rest</div></div><div class="farr">→</div>
+    <div class="fstep"><div class="fi">tickets</div><div class="fd">the backlog feeds the worker fleet</div></div>
+  </div>
+  <div class="row" style="flex:none;gap:26px;align-items:stretch">
+    <div class="quote b grow" style="font-size:24px">My phone pings when someone <b>starts playing</b>, <b>wins a run</b>, or <b>walks away</b> — a cron sweep infers session ends from the telemetry gap. Discord first, Telegram fallback.</div>
+    <div class="quote b grow" style="font-size:24px">The screenshot is grabbed <b>before</b> the pause menu draws, and the last battle payload rides along — “that fight was unfair” arrives <b>with the fight</b>.</div>
+  </div>
+  <div class="spacer"></div>
+</section>
+
+<!-- ============================================================ 26 LIVE WEB -->
+<section class="slide" data-act="II · The Factory">
+  <div class="kick">Live surfaces</div>
+  <h2>The game leaks onto the <em>web</em></h2>
+  <div class="row">
+    <div class="col" style="flex:1.3">
+      <div class="frame b"><img src="assets/img/jukebox_site.png"></div>
+      <div class="cap b"><a href="https://thepaulbooth.com/warlords-jukebox/" target="_blank" rel="noopener"><b>thepaulbooth.com/warlords-jukebox</b></a> — all 73 songs with lyrics, one self-contained HTML file.</div>
+    </div>
+    <div class="col" style="flex:1">
+      <div class="sub b" style="font-size:26px"><b>The Muster Roll</b> — a live dashboard rendered straight from the telemetry DB: who's in the field right now, leaderboards, daily muster chart, exact hours played.</div>
+      <div class="sub b" style="font-size:26px">Both are boring-tech on purpose: one HTML file, one Worker route. No build steps to rot.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ 27 DIVIDER III -->
+<section class="slide center divider" data-embers data-act="III · Art &amp; Music">
+  <div class="num">ACT III</div>
+  <h1>Art &amp; Music</h1>
+  <div class="rule"></div>
+  <div class="sub">Nine hundred paintings and ten hours of original songs, on a solo-dev budget of one.</div>
+</section>
+
+<!-- ============================================================ 28 ART PIPELINE -->
+<section class="slide" data-act="III · Art &amp; Music">
+  <div class="kick">nano-banana · Gemini image gen</div>
+  <h2>The art pipeline audits <em>itself</em></h2>
+  <div class="flow b" style="margin:30px 0">
+    <div class="fstep"><div class="fi">audit</div><div class="fd">dump every card missing a painted face</div></div><div class="farr">→</div>
+    <div class="fstep"><div class="fi">prompt</div><div class="fd">name, flavor, pack palette — <b>never mechanics text</b></div></div><div class="farr">→</div>
+    <div class="fstep"><div class="fi">generate</div><div class="fd">Gemini image API, 3 workers, retries</div></div><div class="farr">→</div>
+    <div class="fstep"><div class="fi">ingest</div><div class="fd">center-crop, Lanczos to 1200×896</div></div><div class="farr">→</div>
+    <div class="fstep"><div class="fi">wire</div><div class="fd">one dict entry in content.gd</div></div><div class="farr">→</div>
+    <div class="fstep"><div class="fi">audit = 0</div><div class="fd">“missing a painted face — must be ZERO”</div></div>
+  </div>
+  <div class="g4 b" style="flex:1;align-content:center">
+    <div class="frame"><img src="assets/img/art_balor.jpg"></div>
+    <div class="frame"><img src="assets/img/art_treant.jpg"></div>
+    <div class="frame"><img src="assets/img/art_leviathan.jpg"></div>
+    <div class="frame"><img src="assets/img/art_storm_titan.jpg"></div>
+  </div>
+  <div class="footer-note b">Why no mechanics in the prompt? Feed the model “deal 3 damage” and it paints a number 3. We learned that the hard way.</div>
+</section>
+
+<!-- ============================================================ 29 ART SCALE -->
+<section class="slide" data-act="III · Art &amp; Music">
+  <div class="kick">The count</div>
+  <h2>An art department's output</h2>
+  <div class="row">
+    <div class="col grow">
+      <div class="stats" style="grid-template-columns:repeat(3,1fr)">
+        <div class="stat b"><div class="v">830</div><div class="l">painted card images — faces, full-art, pop-outs</div></div>
+        <div class="stat b"><div class="v">129</div><div class="l">event illustrations</div></div>
+        <div class="stat b"><div class="v">1,563</div><div class="l">hand-tuned SVGs — units, icons, rigs</div></div>
+        <div class="stat b"><div class="v">208</div><div class="l">enemy-rig body parts across 29 bespoke animated lords</div></div>
+        <div class="stat b"><div class="v">245</div><div class="l">paper-doll pieces, gilded twins included</div></div>
+        <div class="stat b"><div class="v">156</div><div class="l">achievement icons — unlocked + grayscale locked</div></div>
+      </div>
+      <div class="row b" style="flex:none;gap:26px;margin-top:26px;align-items:flex-start">
+        <div style="flex:none;width:300px"><div class="frame"><img src="assets/history/first_generated_art.jpg"></div></div>
+        <div class="quote grow" style="align-self:center">This is the first image the pipeline ever produced — the humble Recruit, at <b>2:11 AM on day one</b>. The 796th looked considerably better.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ 30 MUSIC PIPELINE -->
+<section class="slide" data-act="III · Art &amp; Music">
+  <div class="kick">Suno + Claude + Gemini</div>
+  <h2>Every villain gets a <em>genre</em></h2>
+  <div class="row">
+    <div class="col" style="flex:1.1">
+      <table class="tb b">
+        <tr><th>Enemy</th><th>Their sound</th></tr>
+        <tr><td>The Elder Treant</td><td class="g">reggae rap</td></tr>
+        <tr><td>Grix the Goblin King</td><td class="g">style prompt, in full: “goblin”</td></tr>
+        <tr><td>Brass Colossus</td><td class="g">German industrial metal</td></tr>
+        <tr><td>The Slime Lord</td><td class="g">“classic white rapper from Detroit. a little whiny.”</td></tr>
+        <tr><td>Silvertongue's Racket</td><td class="g">big-band swing showtune</td></tr>
+        <tr><td>The Pale Rider</td><td class="g">spaghetti-western doom</td></tr>
+        <tr><td>Amanita, the Sporecrown</td><td class="g">psychedelic mushroom doom</td></tr>
+        <tr><td>Slime Swarm (pack)</td><td class="g">bubblegum chiptune pop</td></tr>
+        <tr><td>Final Rites (pack)</td><td class="g">New Orleans funeral dirge</td></tr>
+        <tr><td>Trapworks (pack)</td><td class="g">modern trap. obviously.</td></tr>
+      </table>
+    </div>
+    <div class="col" style="flex:1">
+      <div class="sub b" style="font-size:25px">Lyrics and style prompts co-written by <b>Claude, Gemini, and Suno's own agent</b> — each lord's song references its real units and gimmicks.</div>
+      <div class="sub b" style="font-size:25px">The first voiced test song was so good it changed the plan on the spot: <b>this game's soundtrack would have lyrics.</b></div>
+      <div class="vell sm b"><div class="d">house rule, verbatim from the spec</div><div class="t">"Default lean = divorced-dad-rock when a lord
+had no strong genre pull."</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ 31 LISTEN -->
+<section class="slide" data-act="III · Art &amp; Music">
+  <div class="kick">Turn your sound on</div>
+  <h2>Ten hours of original music. <em>Listen.</em></h2>
+  <div class="row" style="gap:44px">
+    <div class="col grow" style="gap:16px">
+      <div class="trk b" data-src="assets/audio/tremor_of_earth.ogg">
+        <button class="pl">▶</button><div class="ti"><div class="tn">Tremor of Earth</div><div class="tg">reggae rap</div></div><div class="who">The Elder Treant</div>
+      </div>
+      <div class="trk b" data-src="assets/audio/the_goblin_king.ogg">
+        <button class="pl">▶</button><div class="ti"><div class="tn">The Goblin King</div><div class="tg">goblin</div></div><div class="who">Grix</div>
+      </div>
+      <div class="trk b" data-src="assets/audio/lord_the_twins.ogg">
+        <button class="pl">▶</button><div class="ti"><div class="tn">Back to Back</div><div class="tg">Celtic folk-punk duet</div></div><div class="who">The Twins</div>
+      </div>
+      <div class="trk b" data-src="assets/audio/stamp_grind_melt_shine.ogg">
+        <button class="pl">▶</button><div class="ti"><div class="tn">Stamp Grind Melt Shine</div><div class="tg">industrial metal, auf Deutsch</div></div><div class="who">Brass Colossus</div>
+      </div>
+      <div class="trk b" data-src="assets/audio/the_frost_will_claim.ogg">
+        <button class="pl">▶</button><div class="ti"><div class="tn">The Frost Will Claim</div><div class="tg">nordic doom, tagelharpa</div></div><div class="who">Avatar of Winter</div>
+      </div>
+    </div>
+    <div class="col" style="flex:none;width:520px">
+      <div class="stat b" style="text-align:left;padding:28px">
+        <div class="v" style="font-size:30px">Vocals ⇄ Instrumental</div>
+        <div class="l" style="margin-top:14px">The in-game toggle, live in this deck — same take, stem-split, swapped at the exact playhead:</div>
+        <div style="display:flex;gap:14px;margin-top:20px">
+          <button class="pl" id="vt-play" style="width:58px;height:58px;border-radius:50%;border:2px solid var(--gold);background:none;color:var(--gold-hi);font-size:22px;cursor:pointer">▶</button>
+          <button id="vt-toggle" style="flex:1;font-family:var(--disp);font-size:20px;letter-spacing:.1em;border-radius:10px;border:2px solid var(--gold);background:none;color:var(--gold-hi);cursor:pointer">DROP THE VOCALS</button>
+        </div>
+        <div class="l" style="margin-top:12px;font-style:italic" id="vt-state">Tremor of Earth — with vocals</div>
+      </div>
+      <div class="quote b" style="margin-top:24px;font-size:23px">All 73, with lyrics:<br><a href="https://thepaulbooth.com/warlords-jukebox/" target="_blank" rel="noopener"><b>thepaulbooth.com/warlords-jukebox</b></a></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ 32 DIVIDER IV -->
+<section class="slide center divider" data-embers data-act="IV · 35 Days">
+  <div class="num">ACT IV</div>
+  <h1>Thirty-Five Days</h1>
+  <div class="rule"></div>
+  <div class="sub">June 26 → today, in commits and screenshots.</div>
+</section>
+
+<!-- ============================================================ 33 VELOCITY -->
+<section class="slide" data-act="IV · 35 Days">
+  <div class="kick">Velocity</div>
+  <h2>1,421 commits in 35 days</h2>
+  <div id="chart" class="b" style="flex:1;min-height:0"></div>
+  <div class="footer-note b">Peak: 122 commits in one day. The zeroes are called “having a life” — the factory idles safely.</div>
+</section>
+
+<!-- ============================================================ 34 TIMELINE -->
+<section class="slide" data-act="IV · 35 Days">
+  <div class="kick">Milestones</div>
+  <h2>What landed <em>when</em></h2>
+  <div class="row" style="align-items:stretch;gap:40px">
+    <div class="col grow" style="gap:13px">
+      <div class="chip b" style="font-size:22px"><b>Day 1</b> — playable battle loop, jukebox, first card art at 2 AM</div>
+      <div class="chip b" style="font-size:22px"><b>Day 4</b> — the headless balance simulator exists before most of the game</div>
+      <div class="chip b" style="font-size:22px"><b>Day 7</b> — online co-op, lobby to netcode to Steam, in one day</div>
+      <div class="chip b" style="font-size:22px"><b>Day 8</b> — the paper-doll commander; enemy rigs get personalities</div>
+      <div class="chip b" style="font-size:22px"><b>Day 10</b> — every pack painted; 114 new relics; feedback worker live</div>
+      <div class="chip b" style="font-size:22px"><b>Day 11</b> — real Steam AppID, achievements engine, mobile export</div>
+    </div>
+    <div class="col grow" style="gap:13px">
+      <div class="chip b" style="font-size:22px"><b>Day 15</b> — minigame carnival; iOS preset; Daily March + leaderboard</div>
+      <div class="chip b" style="font-size:22px"><b>Day 19</b> — boss phases; emote wheel; cosmetics</div>
+      <div class="chip b" style="font-size:22px"><b>Day 23</b> — Suno pipeline: a theme song for every pack and lord</div>
+      <div class="chip b" style="font-size:22px"><b>Day 26</b> — store overhaul: trailer, 10 shots, OST app, jukebox site</div>
+      <div class="chip b" style="font-size:22px"><b>Day 31</b> — five playable warlords; trading cards; spells hit commanders</div>
+      <div class="chip b" style="font-size:22px"><b>Day 33</b> — eleven languages in one day; store localized to ten</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ 35 EVOLUTION MATCHED BATTLE -->
+<section class="slide" data-act="IV · 35 Days">
+  <div class="kick">Evolution · drag the handle</div>
+  <h2>The same fight, staged twice</h2>
+  <div class="baw"><div class="ba b" data-ba>
+    <img class="under" src="assets/img/battle_matched_now.jpg">
+    <div class="top"><img src="assets/history/itch_battle_jul6.jpg"></div>
+    <div class="handle"></div>
+    <div class="tagA">Day 11</div><div class="tagB">Today</div>
+  </div></div>
+  <div class="cap b">Same warlord, same plains, same five cards in hand, same 80 HP and 99 gold — I wrote a capture script that re-stages the old screenshot in today's build. Everything that moved, moved on its own.</div>
+</section>
+
+<!-- ============================================================ 36 EVOLUTION BATTLE -->
+<section class="slide" data-act="IV · 35 Days">
+  <div class="kick">Evolution · drag the handle</div>
+  <h2>The same boss fight, two weeks apart</h2>
+  <div class="baw"><div class="ba b" data-ba>
+    <img class="under" src="assets/img/boss_dead_rise.jpg">
+    <div class="top"><img src="assets/history/boss_v1.jpg"></div>
+    <div class="handle"></div>
+    <div class="tagA">July 7</div><div class="tagB">Today</div>
+  </div></div>
+</section>
+
+<!-- ============================================================ 36 EVOLUTION MAP -->
+<section class="slide" data-act="IV · 35 Days">
+  <div class="kick">Evolution · drag the handle</div>
+  <h2>The map learns to be a place</h2>
+  <div class="baw"><div class="ba b" data-ba>
+    <img class="under" src="assets/img/map.jpg">
+    <div class="top"><img src="assets/history/map_v1.jpg"></div>
+    <div class="handle"></div>
+    <div class="tagA">July 7</div><div class="tagB">Today</div>
+  </div></div>
+</section>
+
+<!-- ============================================================ 37 EVOLUTION GRID -->
+<section class="slide" data-act="IV · 35 Days">
+  <div class="kick">Evolution</div>
+  <h2>The art learned too</h2>
+  <div class="g3" style="flex:1;align-content:center">
+    <div class="col b" style="gap:10px">
+      <div class="g2" style="gap:10px"><div class="frame"><img src="assets/history/rogue_v1.jpg"></div><div class="frame"><img src="assets/history/rogue_v2.jpg"></div></div>
+      <div class="cap">Day 2: the model kept painting card frames <b>inside</b> the card. Same-day fix: full-bleed scenes only.</div>
+    </div>
+    <div class="col b" style="gap:10px">
+      <div class="g2" style="gap:10px"><div class="frame"><img src="assets/history/juggernaut_v1.jpg"></div><div class="frame"><img src="assets/history/juggernaut_v2.jpg"></div></div>
+      <div class="cap">“Looks like a Magic card” → repainted as a clean scene. Style rules became prompt law.</div>
+    </div>
+    <div class="col b" style="gap:10px">
+      <div class="g2" style="gap:10px"><div class="frame"><img src="assets/history/ost_cover_v1.jpg"></div><div class="frame"><img src="assets/img/ost_cover.jpg"></div></div>
+      <div class="cap">Valve rejected the OST cover — no game logo. Regenerated, resubmitted, approved.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ 38 DIVIDER V -->
+<section class="slide center divider" data-embers data-act="V · The Job">
+  <div class="num">ACT V</div>
+  <h1>The Job</h1>
+  <div class="rule"></div>
+  <div class="sub">What I actually do all day, in verbatim prompts.</div>
+</section>
+
+<!-- ============================================================ 39 MY JOB -->
+<section class="slide" data-act="V · The Job">
+  <div class="kick">Role description</div>
+  <h2>QA engineer meets <em>engineering manager</em></h2>
+  <div class="row">
+    <div class="col grow">
+      <div class="flow b" style="margin-bottom:36px">
+        <div class="fstep"><div class="fi">play</div><div class="fd">every build, on real hardware</div></div><div class="farr">→</div>
+        <div class="fstep"><div class="fi">notice</div><div class="fd">what feels wrong, looks flat, reads confusing</div></div><div class="farr">→</div>
+        <div class="fstep"><div class="fi">direct</div><div class="fd">write the ticket: intent, taste, constraints</div></div><div class="farr">→</div>
+        <div class="fstep"><div class="fi">dispatch</div><div class="fd">the fleet implements in parallel</div></div><div class="farr">→</div>
+        <div class="fstep"><div class="fi">judge</div><div class="fd">review evidence, not diffs</div></div>
+      </div>
+      <div class="sub b" style="font-size:27px">The skills that transfer aren't coding skills. They're <b>manager skills</b>: clear briefs, crisp acceptance criteria, knowing when to trust, when to verify, and what to kill.</div>
+      <div class="quote b" style="margin-top:22px">I review <b>outcomes</b> — screenshots, sim numbers, the feel of the build — almost never the code itself.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ 40 SHORT PROMPTS -->
+<section class="slide" data-act="V · The Job">
+  <div class="kick">Real prompts, verbatim</div>
+  <h2>Most direction is <em>one sentence</em></h2>
+  <div class="col" style="gap:18px;max-width:1450px">
+    <div class="vell b"><div class="d">jul 18 · taste</div><div class="t">for the brass colossus ability, Thunderclouds have to be a lot cooler than just circles - make it look like clouds</div></div>
+    <div class="vell b"><div class="d">jul 20 · bug report</div><div class="t">shield bearers when upgraded says Protection 30, but it should be shield</div></div>
+    <div class="vell b"><div class="d">jul 28 · localization</div><div class="t">Tooltips on the relics in the top bar was not translated.</div></div>
+    <div class="vell b"><div class="d">jul 21 · shipping</div><div class="t">pull down the latest, then push up a new build to steam, itch, android, demo, everywhere</div></div>
+    <div class="vell b"><div class="d">jul 30 · the entire standup</div><div class="t">what is needed from me?</div></div>
+  </div>
+</section>
+
+<!-- ============================================================ 41 LONG PROMPTS -->
+<section class="slide" data-act="V · The Job">
+  <div class="kick">Real prompts, verbatim</div>
+  <h2>…and some direction is a <em>design brief</em></h2>
+  <div class="row" style="gap:34px;align-items:stretch">
+    <div class="col" style="flex:1.25">
+      <div class="vell sm b" style="height:100%"><div class="d">jul 22 · pack rework brief (excerpt)</div><div class="t">rename trapworks to "traps and tricks". rework that pack to add more tricky things - giving units free placement, applying blind, teleporting groups of units from one place to another or switching their positions, more things with surprises, something with charm to trick someone. give Decoy Dummy the tank ability. make the starter card bear traps [...] get creative, and see how this pack could be made more fun, interesting, have unique builds and cool payoffs, etc. also see if there is a way to regenerate the pack art and description to try to get the pack picked more often</div></div>
+    </div>
+    <div class="col" style="flex:1">
+      <div class="vell sm b"><div class="d">jul 26 · new feature (excerpt)</div><div class="t">make a new screen before you pick packs where you have a cool character selection screen [...] every time you win a game with the previous character, you unlock the next one. each character gets a special starting relic and a custom starting deck [...] there should also be a mummy, a spaceman...</div></div>
+      <div class="vell sm b"><div class="d">jul 28 · qa with a spec inside</div><div class="t">enemies sometimes spawn units that immediately have red attack and hp [...] it should be green if it is higher than the original max HP (like growth does), regular if same, red if less. if I give a unit +5 max HP and they take 1 damage, it should still be green.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ 42 MANAGER VOICE -->
+<section class="slide" data-act="V · The Job">
+  <div class="kick">Real prompts, verbatim</div>
+  <h2>Managing a fleet sounds like <em>managing</em></h2>
+  <div class="col" style="gap:18px;max-width:1450px">
+    <div class="vell b"><div class="d">jul 18 · lowering the review bar</div><div class="t">I don't want to review everything, just merge in unless I specify</div></div>
+    <div class="vell b"><div class="d">jul 29 · capacity planning</div><div class="t">can you make more than 3 spin up to handle the ticket backlog? make it ten since my tokens just refreshed</div></div>
+    <div class="vell b"><div class="d">jul 28 · delegation, full autonomy</div><div class="t">you do the steam partner site changes for the game and demo, localize the store page, do the achievement strings. make all the changes necessary on that site. [...] do all steps, don't ask me for any input, and make sure to complete the whole thing</div></div>
+    <div class="vell b"><div class="d">jul 22 · performance management</div><div class="t">what did i say about stopping when you have tasks or phases left?</div></div>
+  </div>
+</section>
+
+<!-- ============================================================ 43 DIVIDER VI -->
+<section class="slide center divider" data-embers data-act="VI · Scars">
+  <div class="num">ACT VI</div>
+  <h1>Scars</h1>
+  <div class="rule"></div>
+  <div class="sub">The parts that hurt. You'll want these if you try this.</div>
+</section>
+
+<!-- ============================================================ 44 ERASED NIGHT -->
+<section class="slide" data-act="VI · Scars">
+  <div class="kick">July 29</div>
+  <h2>The night one agent <em>erased everyone's work</em></h2>
+  <div class="row">
+    <div class="col" style="flex:1.2">
+      <div class="sub b" style="font-size:26px">A dozen agents had worked through the night. One of them hit a snag, decided the history looked wrong — and <b>reverted the lot</b>. Every other agent's merged work, gone.</div>
+      <div class="sub b" style="font-size:26px">The recovery was archaeology: one stray commit had preserved <b>only the test drivers</b>. Orphaned tests describing features that no longer existed — so the tests <b>became the spec</b>, and thirteen tickets rebuilt the night.</div>
+      <div class="sub b" style="font-size:26px;color:var(--gold-hi)">New law: every worker commits and pushes relentlessly, works isolated, and nobody touches shared history.</div>
+    </div>
+    <div class="col" style="flex:1">
+      <div class="vell b"><div class="d">the recovered spec, in effect</div><div class="t">ttest_undying_fx.gd      → what WAS undying fx?
+ttest_relic_rework.gd    → which relics changed?
+ttest_summon_storm.gd    → storm did… something?
+13 tickets filed: #118–#130
+"orphaned drivers ARE the spec"</div></div>
+      <div class="quote b" style="margin-top:22px;font-size:23px">Same lesson every distributed team learns — except my team runs at 3 AM and never gets tired enough to stop.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ 45 HARD THINGS -->
+<section class="slide" data-act="VI · Scars">
+  <div class="kick">The rest of the scar tissue</div>
+  <h2>What was actually hard</h2>
+  <div class="stats" style="grid-template-columns:repeat(3,1fr)">
+    <div class="stat b" style="text-align:left;padding:26px"><div class="v" style="font-size:30px">The Twins' duet</div><div class="l">Suno kept blending two singers into one voice. The fix reads like a legal contract: “THE MAN … THE WOMAN … the singer NEVER changes mid-section.” Take after take.</div></div>
+    <div class="stat b" style="text-align:left;padding:26px"><div class="v" style="font-size:30px">Balance at scale</div><div class="l">563 cards × 41 lords × 21 packs — humans can't test that. The answer was the simulator, personas, and paired-seed statistics.</div></div>
+    <div class="stat b" style="text-align:left;padding:26px"><div class="v" style="font-size:30px">Boomerang bugs</div><div class="l">Some bugs return. Attack-speed resets, tooltip clipping, untranslated strings. The cure is a regression driver per fix — 119 of them now.</div></div>
+    <div class="stat b" style="text-align:left;padding:26px"><div class="v" style="font-size:30px">Token ceilings</div><div class="l">The fleet is budget-bound. Size labels route small work to cheap models; big pushes wait for the window. “make it ten since my tokens just refreshed.”</div></div>
+    <div class="stat b" style="text-align:left;padding:26px"><div class="v" style="font-size:30px">Valve's clock</div><div class="l">Every review round costs days: demo flagged for undisclosed online play, OST cover bounced for a missing logo. Automation can't speed up a queue.</div></div>
+    <div class="stat b" style="text-align:left;padding:26px"><div class="v" style="font-size:30px">The last 10%</div><div class="l">Polish still takes the longest. AI compresses the first 90% massively; the final feel — juice, readability, fairness — is still handcraft, one build at a time.</div></div>
+  </div>
+</section>
+
+<!-- ============================================================ 46 LESSONS -->
+<section class="slide" data-act="VI · Scars">
+  <div class="kick">If you try this</div>
+  <h2>What I'd tell your team</h2>
+  <div class="col" style="gap:20px;max-width:1500px">
+    <div class="quote b"><b>1 · Verification is the product.</b> The game is agent output; the audits, sims, and screenshot drivers are what make it shippable. Build the proving ground first.</div>
+    <div class="quote b"><b>2 · Demand evidence, not diffs.</b> A PR with a screenshot and a green audit merges itself. Reviewing code line-by-line doesn't scale to ten workers; reviewing outcomes does.</div>
+    <div class="quote b"><b>3 · Isolation is cheap, lost work isn't.</b> Worktrees, relentless pushes, no shared mutable history. Ask me how I know.</div>
+    <div class="quote b"><b>4 · Keep taste human.</b> Direction, feel, fairness, humor — the prompts that matter are opinions. “Thunderclouds have to be a lot cooler than just circles.”</div>
+    <div class="quote b"><b>5 · Size the ceremony to the change.</b> One-line fixes go inline; only real features earn the full ticket pipeline. Overhead must pay for itself.</div>
+  </div>
+</section>
+
+<!-- ============================================================ 47 NEXT -->
+<section class="slide" data-act="Close">
+  <div class="kick">Roadmap</div>
+  <h2>Where it goes from here</h2>
+  <div class="row">
+    <div class="col grow" style="gap:24px">
+      <div class="chip b" style="font-size:25px;padding:16px 26px"><b>Pad-native overhaul</b> — controller play without a cursor</div>
+      <div class="chip b" style="font-size:25px;padding:16px 26px"><b>Demo approval → Steam launch</b> — through Valve's queue, then the Release button</div>
+      <div class="chip b" style="font-size:25px;padding:16px 26px"><b>Trading cards unlock</b> post-release; OST goes live alongside</div>
+      <div class="chip b" style="font-size:25px;padding:16px 26px"><b>Mobile</b> — the exports already build; the UX pass is the work</div>
+      <div class="chip b" style="font-size:25px;padding:16px 26px"><b>More of everything</b> — the factory doesn't stop: content is a ticket away</div>
+    </div>
+    <div class="col" style="flex:none;width:600px">
+      <div class="frame b"><img src="assets/img/boss_dead_rise.jpg"></div>
+      <div class="cap b">Wishlist it. Uncle Jim is watching.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ 48 RECAP -->
+<section class="slide center" data-embers data-act="Close">
+  <div class="kick">Recap</div>
+  <h1 style="font-size:72px;max-width:1600px">One person. Thirty-five days.<br>A real game on Steam — <span class="gold">and a factory that built it.</span></h1>
+  <div class="sub b" style="margin-top:44px;font-size:30px">The surprising part isn't that AI writes code.<br>It's that <b>management</b> — tickets, verification, evidence, taste — became the whole job.</div>
+</section>
+
+<!-- ============================================================ 49 IT'S LIVE -->
+<section class="slide" data-act="Close">
+  <div class="kick">Not a prototype</div>
+  <h2>It's a <em>live store page</em>, right now</h2>
+  <div class="row" style="gap:48px">
+    <div class="col" style="flex:none;width:800px">
+      <div class="scrollpane b"><img src="assets/img/steam_store_page.jpg" alt="the live Steam store page"></div>
+    </div>
+    <div class="col" style="flex:1">
+      <div class="sub b" style="font-size:26px">Captured from <a href="https://store.steampowered.com/app/4937370" target="_blank" rel="noopener">store.steampowered.com</a> — the real page, live today. Every asset on it came out of the same pipeline.</div>
+      <div class="sub b" style="font-size:26px"><b>Capsules, trailer, 10 screenshots, animated GIFs</b>, the long-form copy, the tag set, the AI-content disclosure, and the release date.</div>
+      <div class="sub b" style="font-size:26px"><b>Localized into 10 languages</b>, plus a demo app and a soundtrack app hanging off the same page.</div>
+      <div class="quote b" style="font-size:24px">Scroll far enough and Steam puts it beside Slay the Spire. That's the shelf it's trying to earn.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ 50 AMA -->
+<section class="slide center" data-embers data-act="Close">
+  <div class="titlebg" style="opacity:.22"></div>
+  <div class="overbg" style="display:flex;flex-direction:column;align-items:center">
+    <h1 style="font-size:110px">Ask me anything</h1>
+    <div class="divider"><div class="rule"></div></div>
+    <div class="sub" style="font-size:28px;line-height:2">
+      <b>Steam</b> · <a href="https://store.steampowered.com/app/4937370" target="_blank" rel="noopener">store.steampowered.com/app/4937370</a><br>
+      <b>Jukebox</b> · <a href="https://thepaulbooth.com/warlords-jukebox/" target="_blank" rel="noopener">thepaulbooth.com/warlords-jukebox</a><br>
+      <b>itch</b> · <a href="https://thepaulbooth.itch.io/warlords" target="_blank" rel="noopener">thepaulbooth.itch.io/warlords</a><br>
+      <b>Me</b> · <a href="https://thepaulbooth.com" target="_blank" rel="noopener">thepaulbooth.com</a> · <i>Do, Make, Learn</i>
+    </div>
+  </div>
+  <!-- Stand on this slide long enough and the two of us get summoned. -->
+  <div class="egg">
+    <div class="tile"></div>
+    <div class="spark"></div>
+    <div class="w wl"><svg viewBox="0 0 120 150" width="120" height="150" aria-hidden="true">
+      <path d="M52 110 L45 146" stroke="#2b2216" stroke-width="12" stroke-linecap="round"/>
+      <path d="M69 110 L77 146" stroke="#2b2216" stroke-width="12" stroke-linecap="round"/>
+      <path d="M76 76 L106 46" stroke="#e6c39a" stroke-width="10" stroke-linecap="round"/>
+      <circle cx="109" cy="43" r="8" fill="#e6c39a"/>
+      <path d="M41 66 q19 -11 38 0 l5 46 q-24 8 -48 0 z" fill="#2f4f8a"/>
+      <rect x="36" y="96" width="48" height="10" rx="5" fill="#d9a84e"/>
+      <path d="M43 76 L31 106" stroke="#e6c39a" stroke-width="10" stroke-linecap="round"/>
+      <circle cx="60" cy="43" r="21" fill="#e6c39a"/>
+      <path d="M39 40 q5 -22 21 -22 q17 0 21 22 q-9 -9 -21 -7 q-13 2 -21 7z" fill="#42301d"/>
+    </svg></div>
+    <div class="w wr"><svg viewBox="0 0 120 150" width="120" height="150" aria-hidden="true">
+      <path d="M52 110 L45 146" stroke="#5c3a2c" stroke-width="12" stroke-linecap="round"/>
+      <path d="M69 110 L77 146" stroke="#5c3a2c" stroke-width="12" stroke-linecap="round"/>
+      <path d="M44 76 L14 46" stroke="#e7d9c4" stroke-width="10" stroke-linecap="round"/>
+      <circle cx="11" cy="43" r="8" fill="#e7d9c4"/>
+      <path d="M41 66 q19 -11 38 0 l5 46 q-24 8 -48 0 z" fill="#d97757"/>
+      <rect x="36" y="96" width="48" height="10" rx="5" fill="#f0e2cb"/>
+      <path d="M77 76 L89 106" stroke="#e7d9c4" stroke-width="10" stroke-linecap="round"/>
+      <g fill="#d97757" transform="translate(60,42)">
+        <rect x="-4" y="-25" width="8" height="22" rx="4"/>
+        <rect x="-4" y="-25" width="8" height="22" rx="4" transform="rotate(45)"/>
+        <rect x="-4" y="-25" width="8" height="22" rx="4" transform="rotate(90)"/>
+        <rect x="-4" y="-25" width="8" height="22" rx="4" transform="rotate(135)"/>
+        <rect x="-4" y="-25" width="8" height="22" rx="4" transform="rotate(180)"/>
+        <rect x="-4" y="-25" width="8" height="22" rx="4" transform="rotate(225)"/>
+        <rect x="-4" y="-25" width="8" height="22" rx="4" transform="rotate(270)"/>
+        <rect x="-4" y="-25" width="8" height="22" rx="4" transform="rotate(315)"/>
+      </g>
+    </svg></div>
+  </div>
+</section>
+
+<canvas id="embers"></canvas>
+<div id="bar"></div><div id="pgnum"></div><div id="acttag"></div>
+<div id="hint">← → navigate · F fullscreen</div>
+</div></div>
+
+<script>
+/* ============ engine ============ */
+const slides=[...document.querySelectorAll('.slide')];
+let cur=0;
+const bar=document.getElementById('bar'),pg=document.getElementById('pgnum'),act=document.getElementById('acttag');
+function fit(){const s=Math.min(innerWidth/1920,innerHeight/1080);document.getElementById('stage').style.transform=`scale(${s})`;document.getElementById('stage').style.transformOrigin='center';}
+addEventListener('resize',fit);
+document.getElementById('viewport').style.overflow='visible';
+
+/* A caption riding directly behind another build is not its own beat — it arrives
+   with the picture it describes. */
+function ridesAlong(e){return e.classList.contains('cap')&&e.previousElementSibling
+  &&e.previousElementSibling.classList.contains('b');}
+function builds(s){return [...s.querySelectorAll('.b')].filter(e=>!ridesAlong(e));}
+function reveal(e){
+  e.classList.add('on');
+  let n=e.nextElementSibling;
+  while(n&&n.classList.contains('b')&&ridesAlong(n)){n.classList.add('on');n=n.nextElementSibling;}
+}
+function show(i,revealAll){
+  i=Math.max(0,Math.min(slides.length-1,i));
+  slides.forEach((s,j)=>{
+    const on=j===i; s.classList.toggle('active',on);
+    s.querySelectorAll('video').forEach(v=>{if(on){v.play().catch(()=>{})}else v.pause();});
+  });
+  if(cur!==i) stopAllAudio();
+  cur=i;
+  const bs=builds(slides[i]);
+  slides[i].querySelectorAll('.b').forEach(b=>b.classList.toggle('on',revealAll||false));
+  slides[i].dataset.bi=revealAll?bs.length:0;
+  if(!revealAll){ // auto-reveal first build for rhythm
+    step();
+  }
+  bar.style.width=((i+1)/slides.length*100)+'%';
+  pg.textContent=(i+1)+' / '+slides.length;
+  act.textContent=slides[i].dataset.act||'';
+  document.getElementById('embers').classList.toggle('on',slides[i].hasAttribute('data-embers'));
+  armEgg(slides[i]);
+  location.hash=i+1;
+}
+/* Linger on a slide carrying an .egg and it plays itself, once, after half a
+   minute — long enough that it lands mid-Q&A rather than on arrival. */
+let eggTimer=null;
+function armEgg(slide){
+  if(eggTimer){clearTimeout(eggTimer);eggTimer=null;}
+  document.querySelectorAll('.egg.go').forEach(e=>e.classList.remove('go'));
+  const egg=slide.querySelector('.egg');
+  if(egg) eggTimer=setTimeout(()=>egg.classList.add('go'),30000);
+}
+function step(){ // reveal next build; return false if none left
+  const s=slides[cur],bs=builds(s);let bi=+(s.dataset.bi||0);
+  if(bi<bs.length){reveal(bs[bi]);s.dataset.bi=bi+1;return true;}
+  return false;
+}
+function next(){if(!step())show(cur+1);}
+function prev(){show(cur-1,true);}
+addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key===' '||e.key==='PageDown'){e.preventDefault();next();}
+  else if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();prev();}
+  else if(e.key==='Home')show(0);
+  else if(e.key==='End')show(slides.length-1,true);
+  else if(e.key==='f'||e.key==='F'){document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen();}
+});
+addEventListener('click',e=>{if(e.target.closest('button,.ba,a,audio'))return;next();});
+
+/* ============ embers ============ */
+const cv=document.getElementById('embers'),cx=cv.getContext('2d');cv.width=1920;cv.height=1080;
+const P=[...Array(70)].map(()=>({x:Math.random()*1920,y:1080+Math.random()*1080,r:1+Math.random()*2.6,s:.25+Math.random()*.9,w:Math.random()*6.28,o:.25+Math.random()*.5}));
+(function tick(){
+  cx.clearRect(0,0,1920,1080);
+  if(cv.classList.contains('on')){
+    for(const p of P){
+      p.y-=p.s;p.w+=.015;p.x+=Math.sin(p.w)*.4;
+      if(p.y<-10){p.y=1090;p.x=Math.random()*1920;}
+      const g=cx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r*3.2);
+      g.addColorStop(0,`rgba(242,205,126,${p.o})`);g.addColorStop(1,'rgba(176,58,52,0)');
+      cx.fillStyle=g;cx.beginPath();cx.arc(p.x,p.y,p.r*3.2,0,6.28);cx.fill();
+    }
+  }
+  requestAnimationFrame(tick);
+})();
+
+/* ============ before/after sliders ============ */
+document.querySelectorAll('[data-ba]').forEach(ba=>{
+  const top=ba.querySelector('.top'),h=ba.querySelector('.handle');
+  function set(px){const r=ba.getBoundingClientRect();const sc=r.width/ba.offsetWidth;
+    let x=Math.max(0,Math.min(ba.offsetWidth,(px-r.left)/sc));
+    top.style.width=x+'px';h.style.left=x+'px';}
+  ba.addEventListener('pointerdown',e=>{set(e.clientX);const mv=ev=>set(ev.clientX);
+    addEventListener('pointermove',mv);addEventListener('pointerup',()=>removeEventListener('pointermove',mv),{once:true});});
+});
+
+/* ============ audio ============ */
+let player=new Audio();let activeBtn=null;
+function stopAllAudio(){player.pause();if(activeBtn){activeBtn.classList.remove('playing');activeBtn.textContent='▶';activeBtn=null;}
+  vt.a.pause();vt.b.pause();vtBtn.textContent='▶';vtPlaying=false;}
+document.querySelectorAll('.trk').forEach(t=>{
+  const btn=t.querySelector('.pl');
+  btn.addEventListener('click',()=>{
+    if(activeBtn===btn&&!player.paused){player.pause();btn.classList.remove('playing');btn.textContent='▶';activeBtn=null;return;}
+    stopAllAudio();player.src=t.dataset.src;player.volume=.9;player.play();
+    btn.classList.add('playing');btn.textContent='❚❚';activeBtn=btn;
+  });
+});
+/* vocal/instrumental live toggle */
+const vt={a:new Audio('assets/audio/tremor_of_earth.ogg'),b:new Audio('assets/audio/instrumental/tremor_of_earth.ogg')};
+vt.a.volume=.9;vt.b.volume=.9;let vtVocal=true,vtPlaying=false;
+const vtBtn=document.getElementById('vt-play'),vtTg=document.getElementById('vt-toggle'),vtState=document.getElementById('vt-state');
+vtBtn.addEventListener('click',()=>{
+  if(vtPlaying){vt.a.pause();vt.b.pause();vtBtn.textContent='▶';vtPlaying=false;return;}
+  stopAllAudio();(vtVocal?vt.a:vt.b).play();vtBtn.textContent='❚❚';vtPlaying=true;
+});
+vtTg.addEventListener('click',()=>{
+  const from=vtVocal?vt.a:vt.b,to=vtVocal?vt.b:vt.a;
+  to.currentTime=from.currentTime;
+  if(vtPlaying){to.play();from.pause();}
+  vtVocal=!vtVocal;
+  vtTg.textContent=vtVocal?'DROP THE VOCALS':'BRING THEM BACK';
+  vtState.textContent='Tremor of Earth — '+(vtVocal?'with vocals':'instrumental');
+});
+
+/* ============ commit chart ============ */
+const days=[["Jun 26",16],["Jun 27",45],["Jun 28",9],["Jun 29",2],["Jun 30",8],["Jul 1",57],["Jul 2",86],["Jul 3",97],["Jul 4",80],["Jul 5",72],["Jul 6",121],["Jul 7",122],["Jul 8",93],["Jul 9",10],["Jul 10",29],["Jul 11",42],["Jul 12",27],["Jul 13",78],["Jul 14",78],["Jul 15",38],["Jul 16",0],["Jul 17",0],["Jul 18",18],["Jul 19",8],["Jul 20",46],["Jul 21",58],["Jul 22",1],["Jul 23",5],["Jul 24",0],["Jul 25",6],["Jul 26",24],["Jul 27",11],["Jul 28",28],["Jul 29",53],["Jul 30",53]];
+const marksAt={6:"co-op in a day",11:"Steam launch week",22:"agent pipeline born",25:"store overhaul",30:"5 warlords",32:"11 languages"};
+(function(){
+  const W=1640,H=560,PB=46,PT=64,bw=W/days.length;
+  let s=`<svg viewBox="0 0 ${W} ${H+PB+PT}" style="width:100%;height:100%">`;
+  for(const gy of [50,100]){const y=PT+H-gy/130*H;
+    s+=`<line x1="0" x2="${W}" y1="${y}" y2="${y}" stroke="rgba(255,255,255,.06)"/><text x="6" y="${y-6}" fill="#93805d" font-size="17" font-family="EB Garamond">${gy}</text>`;}
+  days.forEach(([d,v],i)=>{
+    const h=v/130*H,x=i*bw+3,y=PT+H-h;
+    s+=`<rect x="${x}" y="${y}" width="${bw-6}" height="${Math.max(h,2)}" rx="4" fill="${v?'#d9a84e':'#4a3b24'}"><title>${d}: ${v} commits</title></rect>`;
+    if(v>=95)s+=`<text x="${x+(bw-6)/2}" y="${y-10}" fill="#f2cd7e" font-size="20" text-anchor="middle" font-family="Cinzel">${v}</text>`;
+    if(i%7===0||i===days.length-1)s+=`<text x="${x+(bw-6)/2}" y="${PT+H+30}" fill="#93805d" font-size="17" text-anchor="middle" font-family="EB Garamond">${d}</text>`;
+    if(marksAt[i]){const my=PT+H-h-34,anch=(i>=29||i<=6)?'end':'middle',tx=x+(bw-6)/2;
+      s+=`<circle cx="${tx}" cy="${my}" r="5" fill="#b03a34"/><text x="${anch==='middle'?tx:(anch==='end'?tx+10:tx-10)}" y="${my-14}" fill="#c9b791" font-size="17" text-anchor="${anch}" font-style="italic" font-family="EB Garamond">${marksAt[i]}</text>`;}
+  });
+  s+='</svg>';document.getElementById('chart').innerHTML=s;
+})();
+
+fit();
+show(Math.max(0,(parseInt(location.hash.slice(1))||1)-1),true);
+</script>
+</body>
+</html>
