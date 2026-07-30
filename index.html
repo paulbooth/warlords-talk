@@ -179,8 +179,9 @@ table.tb{border-collapse:collapse;width:100%}
 .scrollpane{height:700px;overflow:hidden;border:1px solid #4a3b24;border-radius:10px;background:#1b2838;
   box-shadow:0 30px 80px rgba(0,0,0,.55),inset 0 0 0 1px rgba(242,205,126,.07)}
 .scrollpane img{display:block;width:100%}
-.slide.active .scrollpane img{animation:pagescroll 46s ease-in-out infinite alternate}
-@keyframes pagescroll{from{transform:translateY(0)}to{transform:translateY(-995px)}}
+/* linear, not eased — an ease-in spends the first seconds looking frozen */
+.slide.active .scrollpane img{animation:pagescroll 70s linear infinite alternate}
+@keyframes pagescroll{from{transform:translateY(0)}to{transform:translateY(-5359px)}}
 
 .achgrid{display:grid;grid-template-columns:112px repeat(5,1fr);gap:12px;align-items:center}
 .achgrid img{width:100%;aspect-ratio:1;display:block;border-radius:10px;border:1px solid #4a3b24;box-shadow:0 10px 26px rgba(0,0,0,.4)}
@@ -287,7 +288,7 @@ a:hover{color:#fff0cf;text-decoration-color:var(--gold)}
 
 <!-- ============================================================ 4 WHAT IS WARLORDS -->
 <section class="slide" data-act="I · The Game">
-  <div class="kick"><span class="n">Act I — The Game</span></div>
+  <div class="kick"><span class="n">Act I · The Game</span></div>
   <h2>A roguelike deckbuilder where combat is an <em>autobattler</em></h2>
   <div class="sub" style="margin-bottom:34px">Slay the Spire's map. A card hand. Then the cards become <b>armies that fight on their own</b>.</div>
   <div class="g4" style="flex:1;align-content:center">
@@ -296,7 +297,7 @@ a:hover{color:#fff0cf;text-decoration-color:var(--gold)}
     <div class="tile b"><div class="frame"><video src="assets/vid/summon.mp4" muted loop playsinline></video></div><div class="tl">3 · Deploy your hand</div></div>
     <div class="tile b"><div class="frame"><video src="assets/vid/clash.mp4" muted loop playsinline></video></div><div class="tl">4 · Ten seconds of war</div></div>
   </div>
-  <div class="footer-note b">Each turn: spend energy, drop squads into lanes, cast spells — then the battle resolves in real time. Kill the enemy commander before yours falls.</div>
+  <div class="footer-note b">Each turn: spend energy, drop squads into lanes, cast spells. Then the battle resolves in real time. Kill the enemy commander before yours falls.</div>
 </section>
 
 <!-- ============================================================ 5 WATCH -->
@@ -304,7 +305,7 @@ a:hover{color:#fff0cf;text-decoration-color:var(--gold)}
   <div class="fullbg"><video src="assets/vid/clash.mp4" muted loop playsinline></video><div class="veil"></div></div>
   <div class="overbg" style="margin-top:auto;padding:0 140px 90px">
     <h2 style="font-size:64px">This is one <em>turn</em>.</h2>
-    <div class="sub">Both sides deploy, then the lanes resolve — pathfinding, statuses, on-death chains, boss phases — in about ten seconds.</div>
+    <div class="sub">Both sides deploy, then the lanes resolve in about ten seconds, with pathfinding, statuses, on-death chains and boss phases.</div>
   </div>
 </section>
 
@@ -317,24 +318,24 @@ a:hover{color:#fff0cf;text-decoration-color:var(--gold)}
     <div class="stat b"><div class="v">1,421</div><div class="l">commits on main</div></div>
     <div class="stat b"><div class="v">563</div><div class="l">cards across 21 draftable packs</div></div>
     <div class="stat b"><div class="v">274</div><div class="l">relics</div></div>
-    <div class="stat b"><div class="v">41</div><div class="l">named enemy warlords — no filler</div></div>
+    <div class="stat b"><div class="v">41</div><div class="l">named enemy warlords, no filler</div></div>
     <div class="stat b"><div class="v">129</div><div class="l">hand-written events, each with painted art</div></div>
-    <div class="stat b"><div class="v">74×2</div><div class="l">original songs — every one with an instrumental twin</div></div>
+    <div class="stat b"><div class="v">74×2</div><div class="l">original songs, every one with an instrumental twin</div></div>
     <div class="stat b"><div class="v">78</div><div class="l">Steam achievements, icons included</div></div>
-    <div class="stat b"><div class="v">11</div><div class="l">languages — 7,063 strings each</div></div>
+    <div class="stat b"><div class="v">11</div><div class="l">languages, 7,063 strings each</div></div>
     <div class="stat b"><div class="v">4-player</div><div class="l">online co-op, Steam or direct IP</div></div>
-    <div class="stat b"><div class="v">119,020</div><div class="l">lines of GDScript — and only 4 hand-authored scenes</div></div>
+    <div class="stat b"><div class="v">119,020</div><div class="l">lines of GDScript, and only 4 hand-authored scenes</div></div>
     <div class="stat b crim"><div class="v">0</div><div class="l">lines of game code written by hand</div></div>
   </div>
 </section>
 
 <!-- ============================================================ 7 CARDS -->
 <section class="slide" data-act="I · The Game">
-  <div class="kick"><span class="n">Act I — The Game</span></div>
+  <div class="kick"><span class="n">Act I · The Game</span></div>
   <h2>Deep, keyword-driven combat</h2>
   <div class="row">
     <div class="col" style="flex:1.35"><div class="frame"><img src="assets/img/all_uniques.jpg" alt="unique cards"></div>
-      <div class="cap">Every unique card — painted faces, pop-out art, forged frames by type.</div></div>
+      <div class="cap">Every unique card. Painted faces, pop-out art, forged frames by type.</div></div>
     <div class="col" style="flex:1">
       <div class="chips b">
         <span class="chip"><b>Burning</b></span><span class="chip"><b>Poison</b> + Contagion</span><span class="chip"><b>Hivemind</b></span>
@@ -342,8 +343,8 @@ a:hover{color:#fff0cf;text-decoration-color:var(--gold)}
         <span class="chip"><b>Ember Chain</b></span><span class="chip"><b>Sacrifice</b></span><span class="chip"><b>Channeling</b></span>
         <span class="chip"><b>Pack Tactics</b></span><span class="chip"><b>Formation</b></span><span class="chip"><b>Intangible</b></span>
       </div>
-      <div class="sub b" style="font-size:26px"><b>375 summons · 130 spells · 58 powers</b> — plus traps, hazards, turrets, barricades. <b>68 unit keywords</b>, 15 statuses, 75 stacking battle powers.</div>
-      <div class="sub b" style="font-size:26px">Every keyword carries its number — <b>“Shield 2”</b>, never “some shield”. House rule, enforced by an audit script.</div>
+      <div class="sub b" style="font-size:26px"><b>375 summons · 130 spells · 58 powers.</b> Plus traps, hazards, turrets, barricades. <b>68 unit keywords</b>, 15 statuses, 75 stacking battle powers.</div>
+      <div class="sub b" style="font-size:26px">Every keyword carries its number. <b>“Shield 2”</b>, never “some shield”. House rule, enforced by an audit script.</div>
     </div>
   </div>
 </section>
@@ -354,7 +355,7 @@ a:hover{color:#fff0cf;text-decoration-color:var(--gold)}
   <div class="overbg" style="margin-top:auto;padding:0 140px 80px;display:flex;align-items:flex-end;gap:50px">
     <div>
       <h2 style="font-size:60px"><em>41</em> named enemy warlords</h2>
-      <div class="sub">Each with its own army, arena, taunts, signature spells — and its own theme song. Many are living, multi-piece animated rigs.</div>
+      <div class="sub">Each with its own army, arena, taunts, signature spells, and its own theme song. Many are living, multi-piece animated rigs.</div>
     </div>
     <div class="frame b" style="width:420px;flex:none"><video src="assets/vid/lords.mp4" muted loop playsinline></video></div>
   </div>
@@ -366,12 +367,12 @@ a:hover{color:#fff0cf;text-decoration-color:var(--gold)}
   <h2>Break a boss and the fight <em>breaks back</em></h2>
   <div class="row">
     <div class="col" style="flex:1.5"><div class="frame"><video src="assets/vid/bossintro.mp4" muted loop playsinline></video></div>
-      <div class="cap">Mid-clash phase break: THE DEAD RISE — and the dead rise.</div></div>
+      <div class="cap">The banner reads THE DEAD RISE, and the dead rise.</div></div>
     <div class="col" style="flex:1">
-      <div class="sub b" style="font-size:27px"><b>Boss phases</b> — at half health the arena recoils, a cinematic names what changed, and the rules change with it.</div>
-      <div class="sub b" style="font-size:27px"><b>Twin commanders</b> — some lords come in pairs; both must fall.</div>
-      <div class="sub b" style="font-size:27px"><b>Second forms</b> — six bosses have hand-built “woken” rigs that take over mid-fight.</div>
-      <div class="sub b" style="font-size:27px"><b>Signature spells</b> — 41 enemy spells with painted card faces, aimed at your commander.</div>
+      <div class="sub b" style="font-size:27px"><b>Boss phases.</b> At half health the arena recoils, a cinematic names what changed, and the rules change with it.</div>
+      <div class="sub b" style="font-size:27px"><b>Twin commanders.</b> Some lords come in pairs; both must fall.</div>
+      <div class="sub b" style="font-size:27px"><b>Second forms.</b> Six bosses have hand-built “woken” rigs that take over mid-fight.</div>
+      <div class="sub b" style="font-size:27px"><b>Signature spells.</b> 41 enemy spells with painted card faces, aimed at your commander.</div>
     </div>
   </div>
 </section>
@@ -386,7 +387,7 @@ a:hover{color:#fff0cf;text-decoration-color:var(--gold)}
         <span class="chip">Arctic</span><span class="chip">Volcano</span><span class="chip">Necropolis</span><span class="chip">Sporewood</span>
         <span class="chip">Gallows Court</span><span class="chip">Crystal Cavern</span><span class="chip"><b>…30 themes</b></span>
       </div>
-      <div class="sub b" style="font-size:27px">Procedural arenas, seeded per map node: <b>2–5 lanes</b> that bend, <b>18 terrain kinds</b> — bog, ice, high ground — destructible obstacles, and <b>14 battle-wide conditions</b> like Emberfall and The Long Night.</div>
+      <div class="sub b" style="font-size:27px">Procedural arenas, seeded per map node: <b>2–5 lanes</b> that bend, <b>18 terrain kinds.</b> Bog, ice and high ground, destructible obstacles, and <b>14 battle-wide conditions</b> like Emberfall and The Long Night.</div>
       <div class="sub b" style="font-size:27px">Bosses get bespoke arenas tuned to their gimmick.</div>
     </div>
     <div class="col" style="flex:1.5"><div class="frame"><video src="assets/vid/arenas.mp4" muted loop playsinline></video></div>
@@ -397,7 +398,7 @@ a:hover{color:#fff0cf;text-decoration-color:var(--gold)}
 <!-- ============================================================ 11 EVENTS -->
 <section class="slide" data-act="I · The Game">
   <div class="kick">Between battles</div>
-  <h2>The events are <em>unhinged</em> — and you actually play them</h2>
+  <h2>The events are <em>unhinged</em>, and you actually play them</h2>
   <div class="row" style="gap:30px">
     <div class="col" style="flex:1.35">
       <div class="g3">
@@ -410,14 +411,14 @@ a:hover{color:#fff0cf;text-decoration-color:var(--gold)}
       </div>
     </div>
     <div class="col" style="flex:1">
-      <div class="sub b" style="font-size:26px"><b>129</b> choose-your-own-adventure events — and <b>a dozen of them are real minigames</b>, played live for keeps:</div>
+      <div class="sub b" style="font-size:26px"><b>129</b> choose-your-own-adventure events, and <b>a dozen of them are real minigames</b>, played live for keeps:</div>
       <div class="chips b">
         <span class="chip"><b>Jump rope</b></span><span class="chip"><b>3-D physics dice</b></span><span class="chip"><b>Rhythm</b></span>
         <span class="chip"><b>Simon</b></span><span class="chip"><b>Jigsaw</b></span><span class="chip"><b>Auction</b></span>
         <span class="chip"><b>Press-your-luck</b></span><span class="chip"><b>Slots</b></span><span class="chip"><b>Pachinko</b></span>
         <span class="chip"><b>Shell game</b></span>
       </div>
-      <div class="sub b" style="font-size:25px">The dice are rigid-body physics. The wheel is honest. The mimic <b>lures you</b> with treasure. Every event has bespoke painted art — all 129 of them.</div>
+      <div class="sub b" style="font-size:25px">The dice are rigid-body physics. The wheel is honest. The mimic <b>lures you</b> with treasure. Every event has bespoke painted art, all 129 of them.</div>
     </div>
   </div>
 </section>
@@ -430,8 +431,8 @@ a:hover{color:#fff0cf;text-decoration-color:var(--gold)}
     <div class="col" style="flex:1.5"><div class="frame"><video src="assets/vid/spell.mp4" muted loop playsinline></video></div>
       <div class="cap">Meteor Storm, with a live area preview before you commit.</div></div>
     <div class="col" style="flex:1">
-      <div class="sub b" style="font-size:27px"><b>274</b> relics in five pools — passive, triggered, build-around — shown as inline icons in the run bar, each linking the card it names.</div>
-      <div class="sub b" style="font-size:27px"><b>130 spells</b>, <b>33 potions</b>. Spells strike units <b>or the enemy commander directly</b> — a rule the whole enemy AI had to learn too.</div>
+      <div class="sub b" style="font-size:27px"><b>274</b> relics in five pools (passive, triggered, build-around), shown as inline icons in the run bar, each linking the card it names.</div>
+      <div class="sub b" style="font-size:27px"><b>130 spells</b>, <b>33 potions</b>. Spells strike units <b>or the enemy commander directly.</b> A rule the whole enemy AI had to learn too.</div>
       <div class="sub b" style="font-size:27px">Commander healing is deliberately <b>scarce</b>. Every point matters.</div>
     </div>
   </div>
@@ -443,9 +444,9 @@ a:hover{color:#fff0cf;text-decoration-color:var(--gold)}
   <h2>A <em>paper doll</em> assembled from your draft</h2>
   <div class="row">
     <div class="col" style="flex:1">
-      <div class="sub b" style="font-size:27px">Every pack you draft contributes <b>one body part</b> — head, torso, arms, legs, accessory — so every run's commander looks like what you're playing.</div>
+      <div class="sub b" style="font-size:27px">Every pack you draft contributes <b>one body part.</b> Head, torso, arms, legs and accessory, so every run's commander looks like what you're playing.</div>
       <div class="sub b" style="font-size:27px">All vector art, re-rasterized at true size for cinematics. <b>36 part sets</b>, each with a gilded mastery variant.</div>
-      <div class="sub b" style="font-size:27px">Five playable warlords — king, mummy, spaceman and friends — each with a signature relic and starting deck.</div>
+      <div class="sub b" style="font-size:27px">Five playable warlords (king, mummy, spaceman and friends), each with a signature relic and starting deck.</div>
     </div>
     <div class="col" style="flex:1.5"><div class="frame"><video src="assets/vid/draft.mp4" muted loop playsinline></video></div>
       <div class="cap">The doll re-dresses itself as you pick.</div></div>
@@ -459,14 +460,14 @@ a:hover{color:#fff0cf;text-decoration-color:var(--gold)}
   <div class="row">
     <div class="col" style="flex:1">
       <div class="sub b" style="font-size:25px"><b>Pack XP → unlock cards.</b> Win with a pack, level it, open its next cards.</div>
-      <div class="sub b" style="font-size:25px"><b>Pack Paths.</b> At levels 4/5/6 each pack branches — pick a doctrine and its cards <b>transform</b>.</div>
-      <div class="sub b" style="font-size:25px"><b>Ascendant looks.</b> Master a pack fully and its gilded cosmetic set is yours — 21 matching achievements.</div>
-      <div class="sub b" style="font-size:25px"><b>Compendium</b> that fills in as you discover. <b>Daily March</b> — one seeded run a day, on a Steam leaderboard. <b>10 ascension tiers</b> when it gets too easy.</div>
+      <div class="sub b" style="font-size:25px"><b>Pack Paths.</b> At levels 4/5/6 each pack branches, so pick a doctrine and its cards <b>transform</b>.</div>
+      <div class="sub b" style="font-size:25px"><b>Ascendant looks.</b> Master a pack fully and its gilded cosmetic set is yours, with 21 matching achievements.</div>
+      <div class="sub b" style="font-size:25px"><b>Compendium</b> that fills in as you discover. <b>Daily March.</b> One seeded run a day, on a Steam leaderboard. <b>10 ascension tiers</b> when it gets too easy.</div>
       <div class="frame b"><video src="assets/vid/unlock.mp4" muted loop playsinline style="max-height:240px"></video></div>
     </div>
     <div class="col" style="flex:1.4;gap:12px">
       <div class="frame b" style="max-height:330px"><img src="assets/shots/charselect_1.jpg" style="object-fit:cover;object-position:top"></div>
-      <div class="cap b" style="margin-top:0">Five playable warlords — win with one to wake the next.</div>
+      <div class="cap b" style="margin-top:0">Five playable warlords. Win with one to wake the next.</div>
       <div class="frame b" style="max-height:300px"><img src="assets/shots/ascendant_1.jpg" style="object-fit:cover;object-position:top"></div>
       <div class="cap b" style="margin-top:0">Every pack's commander in three looks: Battleworn, Gilded, Ascendant.</div>
     </div>
@@ -479,11 +480,11 @@ a:hover{color:#fff0cf;text-decoration-color:var(--gold)}
   <h2>Full 4-player online <em>co-op</em></h2>
   <div class="row">
     <div class="col" style="flex:1.5"><div class="frame"><video src="assets/vid/coop.mp4" muted loop playsinline></video></div>
-      <div class="cap">Shared clashes — allied squads, slot-colored pings and aim arrows.</div></div>
+      <div class="cap">Shared clashes, allied squads, slot-colored pings and aim arrows.</div></div>
     <div class="col" style="flex:1">
-      <div class="sub b" style="font-size:25px"><b>Host-authoritative netcode</b> — one real simulation, clients render 12 Hz snapshots. Solo play is byte-identical to the local path.</div>
-      <div class="sub b" style="font-size:25px"><b>Steam lobbies or direct IP</b> with UPnP auto-port-forward — co-op works even without Steam.</div>
-      <div class="sub b" style="font-size:25px">Map <b>voting</b>, claim-a-seat resume, mid-battle rejoin, live presence — watch an ally's fight and <b>suggest the card</b> they should play. <b>76 message types</b> in the protocol.</div>
+      <div class="sub b" style="font-size:25px"><b>Host-authoritative netcode.</b> One real simulation, clients render 12 Hz snapshots. Solo play is byte-identical to the local path.</div>
+      <div class="sub b" style="font-size:25px"><b>Steam lobbies or direct IP</b> with UPnP auto-port-forward, so co-op works even without Steam.</div>
+      <div class="sub b" style="font-size:25px">Map <b>voting</b>, claim-a-seat resume, mid-battle rejoin, live presence. Watch an ally's fight and <b>suggest the card</b> they should play. <b>76 message types</b> in the protocol.</div>
       <div class="g2 b" style="gap:14px">
         <div class="tile"><div class="frame"><img src="assets/shots/coop_lobby.jpg"></div><div class="tl">The War Council</div></div>
         <div class="tile"><div class="frame"><img src="assets/shots/emotes_dance.jpg"></div><div class="tl">Emote wheel · 461 lines</div></div>
@@ -498,9 +499,9 @@ a:hover{color:#fff0cf;text-decoration-color:var(--gold)}
   <div class="kick">The details</div>
   <h2>Quality of life, obsessively</h2>
   <div class="stats" style="grid-template-columns:repeat(3,1fr)">
-    <div class="stat b"><div class="v" style="font-size:34px">Vocals ⇄ Instrumental</div><div class="l">every song swaps mid-note — same take, stem-split, 60 ms dip. Toggle it whenever lyrics distract.</div></div>
+    <div class="stat b"><div class="v" style="font-size:34px">Vocals ⇄ Instrumental</div><div class="l">every song swaps mid-note, same take, stem-split, 60 ms dip. Toggle it whenever lyrics distract.</div></div>
     <div class="stat b"><div class="v" style="font-size:34px">11 languages</div><div class="l">CJK fonts included; locale screenshots audited for tofu and overflow</div></div>
-    <div class="stat b"><div class="v" style="font-size:34px">Any gamepad</div><div class="l">sticks drive a virtual pointer — every screen playable from the couch</div></div>
+    <div class="stat b"><div class="v" style="font-size:34px">Any gamepad</div><div class="l">sticks drive a virtual pointer, so every screen is playable from the couch</div></div>
     <div class="stat b"><div class="v" style="font-size:34px">Accessibility</div><div class="l">text size to Huge, reduce motion, colorblind-safe change marks</div></div>
     <div class="stat b"><div class="v" style="font-size:34px">Autosave</div><div class="l">every map node; co-op runs resume with claim-a-seat</div></div>
     <div class="stat b"><div class="v" style="font-size:34px">Touch</div><div class="l">mobile builds: drag-to-play, safe-area insets, pinch pan</div></div>
@@ -514,7 +515,7 @@ a:hover{color:#fff0cf;text-decoration-color:var(--gold)}
   <div class="row">
     <div class="col" style="flex:1.1">
       <div class="frame b"><img src="assets/img/capsule_main_1232x706.jpg"></div>
-      <div class="cap b">Steam: main app · free demo · soundtrack DLC — three store pages, all approved.</div>
+      <div class="cap b">Steam: main app · free demo · soundtrack DLC. Three store pages, all approved.</div>
     </div>
     <div class="col" style="flex:1">
       <div class="frame b"><img src="assets/img/trading_cards_sheet.jpg" style="max-height:420px;object-fit:contain;background:#0b0805"></div>
@@ -573,7 +574,7 @@ a:hover{color:#fff0cf;text-decoration-color:var(--gold)}
     <div class="stat b grow"><div class="v">105</div><div class="l">issues filed</div></div>
     <div class="stat b grow"><div class="v">173</div><div class="l">PRs merged</div></div>
     <div class="stat b grow"><div class="v">10</div><div class="l">agents in parallel at peak</div></div>
-    <div class="stat b grow"><div class="v">S/M/L</div><div class="l">size labels pick the model — small tickets batch 5-up on a cheaper one</div></div>
+    <div class="stat b grow"><div class="v">S/M/L</div><div class="l">size labels pick the model, and small tickets batch 5-up on a cheaper one</div></div>
   </div>
   <div class="footer-note b">No verification evidence in the PR? It parks as needs-review. Humans only touch what asks for taste.</div>
   <div class="spacer"></div>
@@ -586,9 +587,9 @@ a:hover{color:#fff0cf;text-decoration-color:var(--gold)}
   <div class="row">
     <div class="col" style="flex:1">
       <div class="sub b" style="font-size:26px"><b>119 test drivers</b> that play real battles headlessly and assert outcomes.</div>
-      <div class="sub b" style="font-size:26px"><b>130 screenshot drivers</b> — the agent launches the game, frames the feature, and attaches the picture to its PR.</div>
-      <div class="sub b" style="font-size:26px"><b>14 audits with zero tolerance</b> — every card has painted art, no text overflows a card face, no missing translation, no unlinked relic. The number must be 0.</div>
-      <div class="sub b" style="font-size:26px">A watchdog autoload kills stray game processes agents leave behind — and parks their windows off-screen, muted, so they never interrupt <b>me playing</b>.</div>
+      <div class="sub b" style="font-size:26px"><b>130 screenshot drivers.</b> The agent launches the game, frames the feature, and attaches the picture to its PR.</div>
+      <div class="sub b" style="font-size:26px"><b>14 audits with zero tolerance.</b> Every card has painted art, no text overflows a card face, no missing translation, no unlinked relic. The number must be 0.</div>
+      <div class="sub b" style="font-size:26px">A watchdog autoload kills stray game processes agents leave behind, and parks their windows off-screen, muted, so they never interrupt <b>me playing</b>.</div>
     </div>
     <div class="col" style="flex:1.25">
       <div class="frame b"><img src="assets/img/hover_lift.jpg"></div>
@@ -603,9 +604,9 @@ a:hover{color:#fff0cf;text-decoration-color:var(--gold)}
   <h2>An AI that plays the <em>whole game</em></h2>
   <div class="row">
     <div class="col" style="flex:1.15">
-      <div class="sub b" style="font-size:26px">The headless simulator drafts packs, routes the map, fights every battle with relics and boss phases live — <b>hundreds of full runs in parallel.</b></div>
-      <div class="sub b" style="font-size:26px"><b>A/B testing with paired seeds</b> and McNemar's test — balance changes ship with a p-value.</div>
-      <div class="sub b" style="font-size:26px"><b>Card lab</b>: measure one card causally — same deck, with and without it.</div>
+      <div class="sub b" style="font-size:26px">The headless simulator drafts packs, routes the map, fights every battle with relics and boss phases live. <b>Hundreds of full runs in parallel.</b></div>
+      <div class="sub b" style="font-size:26px"><b>A/B testing with paired seeds</b> and McNemar's test, so balance changes ship with a p-value.</div>
+      <div class="sub b" style="font-size:26px"><b>Card lab</b>: measure one card causally, same deck, with and without it.</div>
       <div class="sub b" style="font-size:26px">Calibrated against <b>live playtester telemetry</b>; tuning only moves when sim and reality agree.</div>
     </div>
     <div class="col" style="flex:1">
@@ -631,9 +632,9 @@ archived → results/sim_history/</div></div>
     <div class="fstep"><div class="fi">live</div><div class="fd">playtest branch auto-set-live</div></div>
   </div>
   <div class="row" style="flex:none">
-    <div class="quote b grow">Three Steam apps ride this: the game, the demo, and the soundtrack. The web build re-imports every texture lossy first — a full mirrored project — so the itch build stays small while desktop stays lossless.</div>
+    <div class="quote b grow">Three Steam apps ride this: the game, the demo, and the soundtrack. The web build re-imports every texture lossy first, a full mirrored project, so the itch build stays small while desktop stays lossless.</div>
   </div>
-  <div class="footer-note b">“pull down the latest, then push up a new build to steam, itch, android, demo, everywhere” — an actual prompt. That's the whole release process.</div>
+  <div class="footer-note b">“pull down the latest, then push up a new build to steam, itch, android, demo, everywhere”, an actual prompt. That's the whole release process.</div>
   <div class="spacer"></div>
 </section>
 
@@ -643,8 +644,8 @@ archived → results/sim_history/</div></div>
   <h2>When Valve has no API, <em>drive the browser</em></h2>
   <div class="row">
     <div class="col" style="flex:1.2">
-      <div class="sub b" style="font-size:26px">The Steamworks partner site is forms and checkboxes — so <b>~25 Playwright scripts</b> share one logged-in browser profile and fill it like a very patient intern.</div>
-      <div class="sub b" style="font-size:26px"><b>78 achievements + 4 stats</b>: created, saved, re-opened, icons attached — the site won't take an icon before the first save. The script knows.</div>
+      <div class="sub b" style="font-size:26px">The Steamworks partner site is forms and checkboxes, so <b>~25 Playwright scripts</b> share one logged-in browser profile and fill it like a very patient intern.</div>
+      <div class="sub b" style="font-size:26px"><b>78 achievements + 4 stats</b>: created, saved, re-opened, icons attached, and the site won't take an icon before the first save. The script knows.</div>
       <div class="sub b" style="font-size:26px">Store copy pushed in <b>10 languages</b>; achievement titles localized from the game's own catalogs; a <b>693 MB soundtrack ZIP</b> uploaded through the site's XHR flow.</div>
       <div class="sub b" style="font-size:26px;color:var(--gold-hi)">Nothing auto-publishes. The Publish button stays human.</div>
     </div>
@@ -676,8 +677,8 @@ archived → results/sim_history/</div></div>
     <div class="fstep"><div class="fi">tickets</div><div class="fd">the backlog feeds the worker fleet</div></div>
   </div>
   <div class="row" style="flex:none;gap:26px;align-items:stretch">
-    <div class="quote b grow" style="font-size:24px">My phone pings when someone <b>starts playing</b>, <b>wins a run</b>, or <b>walks away</b> — a cron sweep infers session ends from the telemetry gap. Discord first, Telegram fallback.</div>
-    <div class="quote b grow" style="font-size:24px">The screenshot is grabbed <b>before</b> the pause menu draws, and the last battle payload rides along — “that fight was unfair” arrives <b>with the fight</b>.</div>
+    <div class="quote b grow" style="font-size:24px">My phone pings when someone <b>starts playing</b>, <b>wins a run</b>, or <b>walks away.</b> A cron sweep infers session ends from the telemetry gap. Discord first, Telegram fallback.</div>
+    <div class="quote b grow" style="font-size:24px">The screenshot is grabbed <b>before</b> the pause menu draws, and the last battle payload rides along, so “that fight was unfair” arrives <b>with the fight</b>.</div>
   </div>
   <div class="spacer"></div>
 </section>
@@ -689,10 +690,10 @@ archived → results/sim_history/</div></div>
   <div class="row">
     <div class="col" style="flex:1.3">
       <div class="frame b"><img src="assets/img/jukebox_site.png"></div>
-      <div class="cap b"><a href="https://thepaulbooth.com/warlords-jukebox/" target="_blank" rel="noopener"><b>thepaulbooth.com/warlords-jukebox</b></a> — all 73 songs with lyrics, one self-contained HTML file.</div>
+      <div class="cap b"><a href="https://thepaulbooth.com/warlords-jukebox/" target="_blank" rel="noopener"><b>thepaulbooth.com/warlords-jukebox</b></a>. All 73 songs with lyrics, one self-contained HTML file.</div>
     </div>
     <div class="col" style="flex:1">
-      <div class="sub b" style="font-size:26px"><b>The Muster Roll</b> — a live dashboard rendered straight from the telemetry DB: who's in the field right now, leaderboards, daily muster chart, exact hours played.</div>
+      <div class="sub b" style="font-size:26px"><b>The Muster Roll.</b> A live dashboard rendered straight from the telemetry DB: who's in the field right now, leaderboards, daily muster chart, exact hours played.</div>
       <div class="sub b" style="font-size:26px">Both are boring-tech on purpose: one HTML file, one Worker route. No build steps to rot.</div>
     </div>
   </div>
@@ -712,11 +713,11 @@ archived → results/sim_history/</div></div>
   <h2>The art pipeline audits <em>itself</em></h2>
   <div class="flow b" style="margin:30px 0">
     <div class="fstep"><div class="fi">audit</div><div class="fd">dump every card missing a painted face</div></div><div class="farr">→</div>
-    <div class="fstep"><div class="fi">prompt</div><div class="fd">name, flavor, pack palette — <b>never mechanics text</b></div></div><div class="farr">→</div>
+    <div class="fstep"><div class="fi">prompt</div><div class="fd">name, flavor, pack palette, <b>never mechanics text</b></div></div><div class="farr">→</div>
     <div class="fstep"><div class="fi">generate</div><div class="fd">Gemini image API, 3 workers, retries</div></div><div class="farr">→</div>
     <div class="fstep"><div class="fi">ingest</div><div class="fd">center-crop, Lanczos to 1200×896</div></div><div class="farr">→</div>
     <div class="fstep"><div class="fi">wire</div><div class="fd">one dict entry in content.gd</div></div><div class="farr">→</div>
-    <div class="fstep"><div class="fi">audit = 0</div><div class="fd">“missing a painted face — must be ZERO”</div></div>
+    <div class="fstep"><div class="fi">audit = 0</div><div class="fd">“missing a painted face, must be ZERO”</div></div>
   </div>
   <div class="g4 b" style="flex:1;align-content:center">
     <div class="frame"><img src="assets/img/art_balor.jpg"></div>
@@ -734,16 +735,16 @@ archived → results/sim_history/</div></div>
   <div class="row">
     <div class="col grow">
       <div class="stats" style="grid-template-columns:repeat(3,1fr)">
-        <div class="stat b"><div class="v">830</div><div class="l">painted card images — faces, full-art, pop-outs</div></div>
+        <div class="stat b"><div class="v">830</div><div class="l">painted card images (faces, full-art, pop-outs)</div></div>
         <div class="stat b"><div class="v">129</div><div class="l">event illustrations</div></div>
-        <div class="stat b"><div class="v">1,563</div><div class="l">hand-tuned SVGs — units, icons, rigs</div></div>
+        <div class="stat b"><div class="v">1,563</div><div class="l">hand-tuned SVGs (units, icons, rigs)</div></div>
         <div class="stat b"><div class="v">208</div><div class="l">enemy-rig body parts across 29 bespoke animated lords</div></div>
         <div class="stat b"><div class="v">245</div><div class="l">paper-doll pieces, gilded twins included</div></div>
-        <div class="stat b"><div class="v">156</div><div class="l">achievement icons — unlocked + grayscale locked</div></div>
+        <div class="stat b"><div class="v">156</div><div class="l">achievement icons, unlocked + grayscale locked</div></div>
       </div>
       <div class="row b" style="flex:none;gap:26px;margin-top:26px;align-items:flex-start">
         <div style="flex:none;width:300px"><div class="frame"><img src="assets/history/first_generated_art.jpg"></div></div>
-        <div class="quote grow" style="align-self:center">This is the first image the pipeline ever produced — the humble Recruit, at <b>2:11 AM on day one</b>. The 796th looked considerably better.</div>
+        <div class="quote grow" style="align-self:center">This is the first image the pipeline ever produced. The humble Recruit, at <b>2:11 AM on day one</b>. The 796th looked considerably better.</div>
       </div>
     </div>
   </div>
@@ -770,7 +771,7 @@ archived → results/sim_history/</div></div>
       </table>
     </div>
     <div class="col" style="flex:1">
-      <div class="sub b" style="font-size:25px">Lyrics and style prompts co-written by <b>Claude, Gemini, and Suno's own agent</b> — each lord's song references its real units and gimmicks.</div>
+      <div class="sub b" style="font-size:25px">Lyrics and style prompts co-written by <b>Claude, Gemini, and Suno's own agent.</b> Each lord's song references its real units and gimmicks.</div>
       <div class="sub b" style="font-size:25px">The first voiced test song was so good it changed the plan on the spot: <b>this game's soundtrack would have lyrics.</b></div>
       <div class="vell sm b"><div class="d">house rule, verbatim from the spec</div><div class="t">"Default lean = divorced-dad-rock when a lord
 had no strong genre pull."</div></div>
@@ -803,12 +804,12 @@ had no strong genre pull."</div></div>
     <div class="col" style="flex:none;width:520px">
       <div class="stat b" style="text-align:left;padding:28px">
         <div class="v" style="font-size:30px">Vocals ⇄ Instrumental</div>
-        <div class="l" style="margin-top:14px">The in-game toggle, live in this deck — same take, stem-split, swapped at the exact playhead:</div>
+        <div class="l" style="margin-top:14px">The in-game toggle, live in this deck. Same take, stem-split, swapped at the exact playhead:</div>
         <div style="display:flex;gap:14px;margin-top:20px">
           <button class="pl" id="vt-play" style="width:58px;height:58px;border-radius:50%;border:2px solid var(--gold);background:none;color:var(--gold-hi);font-size:22px;cursor:pointer">▶</button>
           <button id="vt-toggle" style="flex:1;font-family:var(--disp);font-size:20px;letter-spacing:.1em;border-radius:10px;border:2px solid var(--gold);background:none;color:var(--gold-hi);cursor:pointer">DROP THE VOCALS</button>
         </div>
-        <div class="l" style="margin-top:12px;font-style:italic" id="vt-state">Tremor of Earth — with vocals</div>
+        <div class="l" style="margin-top:12px;font-style:italic" id="vt-state">Tremor of Earth · with vocals</div>
       </div>
       <div class="quote b" style="margin-top:24px;font-size:23px">All 73, with lyrics:<br><a href="https://thepaulbooth.com/warlords-jukebox/" target="_blank" rel="noopener"><b>thepaulbooth.com/warlords-jukebox</b></a></div>
     </div>
@@ -828,7 +829,7 @@ had no strong genre pull."</div></div>
   <div class="kick">Velocity</div>
   <h2>1,421 commits in 35 days</h2>
   <div id="chart" class="b" style="flex:1;min-height:0"></div>
-  <div class="footer-note b">Peak: 122 commits in one day. The zeroes are called “having a life” — the factory idles safely.</div>
+  <div class="footer-note b">Peak: 122 commits in one day. The zeroes are called “having a life”. The factory idles safely.</div>
 </section>
 
 <!-- ============================================================ 34 TIMELINE -->
@@ -837,20 +838,20 @@ had no strong genre pull."</div></div>
   <h2>What landed <em>when</em></h2>
   <div class="row" style="align-items:stretch;gap:40px">
     <div class="col grow" style="gap:13px">
-      <div class="chip b" style="font-size:22px"><b>Day 1</b> — playable battle loop, jukebox, first card art at 2 AM</div>
-      <div class="chip b" style="font-size:22px"><b>Day 4</b> — the headless balance simulator exists before most of the game</div>
-      <div class="chip b" style="font-size:22px"><b>Day 7</b> — online co-op, lobby to netcode to Steam, in one day</div>
-      <div class="chip b" style="font-size:22px"><b>Day 8</b> — the paper-doll commander; enemy rigs get personalities</div>
-      <div class="chip b" style="font-size:22px"><b>Day 10</b> — every pack painted; 114 new relics; feedback worker live</div>
-      <div class="chip b" style="font-size:22px"><b>Day 11</b> — real Steam AppID, achievements engine, mobile export</div>
+      <div class="chip b" style="font-size:22px"><b>Day 1</b> · playable battle loop, jukebox, first card art at 2 AM</div>
+      <div class="chip b" style="font-size:22px"><b>Day 4</b> · the headless balance simulator exists before most of the game</div>
+      <div class="chip b" style="font-size:22px"><b>Day 7</b> · online co-op, lobby to netcode to Steam, in one day</div>
+      <div class="chip b" style="font-size:22px"><b>Day 8</b> · the paper-doll commander; enemy rigs get personalities</div>
+      <div class="chip b" style="font-size:22px"><b>Day 10</b> · every pack painted; 114 new relics; feedback worker live</div>
+      <div class="chip b" style="font-size:22px"><b>Day 11</b> · real Steam AppID, achievements engine, mobile export</div>
     </div>
     <div class="col grow" style="gap:13px">
-      <div class="chip b" style="font-size:22px"><b>Day 15</b> — minigame carnival; iOS preset; Daily March + leaderboard</div>
-      <div class="chip b" style="font-size:22px"><b>Day 19</b> — boss phases; emote wheel; cosmetics</div>
-      <div class="chip b" style="font-size:22px"><b>Day 23</b> — Suno pipeline: a theme song for every pack and lord</div>
-      <div class="chip b" style="font-size:22px"><b>Day 26</b> — store overhaul: trailer, 10 shots, OST app, jukebox site</div>
-      <div class="chip b" style="font-size:22px"><b>Day 31</b> — five playable warlords; trading cards; spells hit commanders</div>
-      <div class="chip b" style="font-size:22px"><b>Day 33</b> — eleven languages in one day; store localized to ten</div>
+      <div class="chip b" style="font-size:22px"><b>Day 15</b> · minigame carnival; iOS preset; Daily March + leaderboard</div>
+      <div class="chip b" style="font-size:22px"><b>Day 19</b> · boss phases; emote wheel; cosmetics</div>
+      <div class="chip b" style="font-size:22px"><b>Day 23</b> · Suno pipeline: a theme song for every pack and lord</div>
+      <div class="chip b" style="font-size:22px"><b>Day 26</b> · store overhaul: trailer, 10 shots, OST app, jukebox site</div>
+      <div class="chip b" style="font-size:22px"><b>Day 31</b> · five playable warlords; trading cards; spells hit commanders</div>
+      <div class="chip b" style="font-size:22px"><b>Day 33</b> · eleven languages in one day; store localized to ten</div>
     </div>
   </div>
 </section>
@@ -865,7 +866,7 @@ had no strong genre pull."</div></div>
     <div class="handle"></div>
     <div class="tagA">Day 11</div><div class="tagB">Today</div>
   </div></div>
-  <div class="cap b">Same warlord, same plains, same five cards in hand, same 80 HP and 99 gold — I wrote a capture script that re-stages the old screenshot in today's build. Everything that moved, moved on its own.</div>
+  <div class="cap b">Same warlord, same plains, same five cards in hand, same 80 HP and 99 gold. I wrote a capture script that re-stages the old screenshot in today's build. Everything that moved, moved on its own.</div>
 </section>
 
 <!-- ============================================================ 36 EVOLUTION BATTLE -->
@@ -907,7 +908,7 @@ had no strong genre pull."</div></div>
     </div>
     <div class="col b" style="gap:10px">
       <div class="g2" style="gap:10px"><div class="frame"><img src="assets/history/ost_cover_v1.jpg"></div><div class="frame"><img src="assets/img/ost_cover.jpg"></div></div>
-      <div class="cap">Valve rejected the OST cover — no game logo. Regenerated, resubmitted, approved.</div>
+      <div class="cap">Valve rejected the OST cover for having no game logo. Regenerated, resubmitted, approved.</div>
     </div>
   </div>
 </section>
@@ -934,7 +935,7 @@ had no strong genre pull."</div></div>
         <div class="fstep"><div class="fi">judge</div><div class="fd">review evidence, not diffs</div></div>
       </div>
       <div class="sub b" style="font-size:27px">The skills that transfer aren't coding skills. They're <b>manager skills</b>: clear briefs, crisp acceptance criteria, knowing when to trust, when to verify, and what to kill.</div>
-      <div class="quote b" style="margin-top:22px">I review <b>outcomes</b> — screenshots, sim numbers, the feel of the build — almost never the code itself.</div>
+      <div class="quote b" style="margin-top:22px">I review <b>outcomes.</b> Screenshots, sim numbers, the feel of the build. Almost never the code itself.</div>
     </div>
   </div>
 </section>
@@ -993,8 +994,8 @@ had no strong genre pull."</div></div>
   <h2>The night one agent <em>erased everyone's work</em></h2>
   <div class="row">
     <div class="col" style="flex:1.2">
-      <div class="sub b" style="font-size:26px">A dozen agents had worked through the night. One of them hit a snag, decided the history looked wrong — and <b>reverted the lot</b>. Every other agent's merged work, gone.</div>
-      <div class="sub b" style="font-size:26px">The recovery was archaeology: one stray commit had preserved <b>only the test drivers</b>. Orphaned tests describing features that no longer existed — so the tests <b>became the spec</b>, and thirteen tickets rebuilt the night.</div>
+      <div class="sub b" style="font-size:26px">A dozen agents had worked through the night. One of them hit a snag, decided the history looked wrong, and <b>reverted the lot</b>. Every other agent's merged work, gone.</div>
+      <div class="sub b" style="font-size:26px">The recovery was archaeology: one stray commit had preserved <b>only the test drivers</b>. Orphaned tests describing features that no longer existed, so the tests <b>became the spec</b>, and thirteen tickets rebuilt the night.</div>
       <div class="sub b" style="font-size:26px;color:var(--gold-hi)">New law: every worker commits and pushes relentlessly, works isolated, and nobody touches shared history.</div>
     </div>
     <div class="col" style="flex:1">
@@ -1003,7 +1004,7 @@ ttest_relic_rework.gd    → which relics changed?
 ttest_summon_storm.gd    → storm did… something?
 13 tickets filed: #118–#130
 "orphaned drivers ARE the spec"</div></div>
-      <div class="quote b" style="margin-top:22px;font-size:23px">Same lesson every distributed team learns — except my team runs at 3 AM and never gets tired enough to stop.</div>
+      <div class="quote b" style="margin-top:22px;font-size:23px">Same lesson every distributed team learns, except my team runs at 3 AM and never gets tired enough to stop.</div>
     </div>
   </div>
 </section>
@@ -1014,11 +1015,11 @@ ttest_summon_storm.gd    → storm did… something?
   <h2>What was actually hard</h2>
   <div class="stats" style="grid-template-columns:repeat(3,1fr)">
     <div class="stat b" style="text-align:left;padding:26px"><div class="v" style="font-size:30px">The Twins' duet</div><div class="l">Suno kept blending two singers into one voice. The fix reads like a legal contract: “THE MAN … THE WOMAN … the singer NEVER changes mid-section.” Take after take.</div></div>
-    <div class="stat b" style="text-align:left;padding:26px"><div class="v" style="font-size:30px">Balance at scale</div><div class="l">563 cards × 41 lords × 21 packs — humans can't test that. The answer was the simulator, personas, and paired-seed statistics.</div></div>
-    <div class="stat b" style="text-align:left;padding:26px"><div class="v" style="font-size:30px">Boomerang bugs</div><div class="l">Some bugs return. Attack-speed resets, tooltip clipping, untranslated strings. The cure is a regression driver per fix — 119 of them now.</div></div>
+    <div class="stat b" style="text-align:left;padding:26px"><div class="v" style="font-size:30px">Balance at scale</div><div class="l">563 cards × 41 lords × 21 packs. Humans can't test that. The answer was the simulator, personas, and paired-seed statistics.</div></div>
+    <div class="stat b" style="text-align:left;padding:26px"><div class="v" style="font-size:30px">Boomerang bugs</div><div class="l">Some bugs return. Attack-speed resets, tooltip clipping, untranslated strings. The cure is a regression driver per fix, 119 of them now.</div></div>
     <div class="stat b" style="text-align:left;padding:26px"><div class="v" style="font-size:30px">Token ceilings</div><div class="l">The fleet is budget-bound. Size labels route small work to cheap models; big pushes wait for the window. “make it ten since my tokens just refreshed.”</div></div>
     <div class="stat b" style="text-align:left;padding:26px"><div class="v" style="font-size:30px">Valve's clock</div><div class="l">Every review round costs days: demo flagged for undisclosed online play, OST cover bounced for a missing logo. Automation can't speed up a queue.</div></div>
-    <div class="stat b" style="text-align:left;padding:26px"><div class="v" style="font-size:30px">The last 10%</div><div class="l">Polish still takes the longest. AI compresses the first 90% massively; the final feel — juice, readability, fairness — is still handcraft, one build at a time.</div></div>
+    <div class="stat b" style="text-align:left;padding:26px"><div class="v" style="font-size:30px">The last 10%</div><div class="l">Polish still takes the longest. AI compresses the first 90% massively; the final feel (juice, readability, fairness) is still handcraft, one build at a time.</div></div>
   </div>
 </section>
 
@@ -1030,7 +1031,7 @@ ttest_summon_storm.gd    → storm did… something?
     <div class="quote b"><b>1 · Verification is the product.</b> The game is agent output; the audits, sims, and screenshot drivers are what make it shippable. Build the proving ground first.</div>
     <div class="quote b"><b>2 · Demand evidence, not diffs.</b> A PR with a screenshot and a green audit merges itself. Reviewing code line-by-line doesn't scale to ten workers; reviewing outcomes does.</div>
     <div class="quote b"><b>3 · Isolation is cheap, lost work isn't.</b> Worktrees, relentless pushes, no shared mutable history. Ask me how I know.</div>
-    <div class="quote b"><b>4 · Keep taste human.</b> Direction, feel, fairness, humor — the prompts that matter are opinions. “Thunderclouds have to be a lot cooler than just circles.”</div>
+    <div class="quote b"><b>4 · Keep taste human.</b> Direction, feel, fairness, humor. The prompts that matter are opinions. “Thunderclouds have to be a lot cooler than just circles.”</div>
     <div class="quote b"><b>5 · Size the ceremony to the change.</b> One-line fixes go inline; only real features earn the full ticket pipeline. Overhead must pay for itself.</div>
   </div>
 </section>
@@ -1041,11 +1042,11 @@ ttest_summon_storm.gd    → storm did… something?
   <h2>Where it goes from here</h2>
   <div class="row">
     <div class="col grow" style="gap:24px">
-      <div class="chip b" style="font-size:25px;padding:16px 26px"><b>Pad-native overhaul</b> — controller play without a cursor</div>
-      <div class="chip b" style="font-size:25px;padding:16px 26px"><b>Demo approval → Steam launch</b> — through Valve's queue, then the Release button</div>
+      <div class="chip b" style="font-size:25px;padding:16px 26px"><b>Pad-native overhaul</b> · controller play without a cursor</div>
+      <div class="chip b" style="font-size:25px;padding:16px 26px"><b>Demo approval → Steam launch</b> · through Valve's queue, then the Release button</div>
       <div class="chip b" style="font-size:25px;padding:16px 26px"><b>Trading cards unlock</b> post-release; OST goes live alongside</div>
-      <div class="chip b" style="font-size:25px;padding:16px 26px"><b>Mobile</b> — the exports already build; the UX pass is the work</div>
-      <div class="chip b" style="font-size:25px;padding:16px 26px"><b>More of everything</b> — the factory doesn't stop: content is a ticket away</div>
+      <div class="chip b" style="font-size:25px;padding:16px 26px"><b>Mobile</b> · the exports already build; the UX pass is the work</div>
+      <div class="chip b" style="font-size:25px;padding:16px 26px"><b>More of everything</b> · the factory doesn't stop: content is a ticket away</div>
     </div>
     <div class="col" style="flex:none;width:600px">
       <div class="frame b"><img src="assets/img/boss_dead_rise.jpg"></div>
@@ -1057,8 +1058,8 @@ ttest_summon_storm.gd    → storm did… something?
 <!-- ============================================================ 48 RECAP -->
 <section class="slide center" data-embers data-act="Close">
   <div class="kick">Recap</div>
-  <h1 style="font-size:72px;max-width:1600px">One person. Thirty-five days.<br>A real game on Steam — <span class="gold">and a factory that built it.</span></h1>
-  <div class="sub b" style="margin-top:44px;font-size:30px">The surprising part isn't that AI writes code.<br>It's that <b>management</b> — tickets, verification, evidence, taste — became the whole job.</div>
+  <h1 style="font-size:72px;max-width:1600px">One person. Thirty-five days.<br>A real game on Steam, <span class="gold">and a factory that built it.</span></h1>
+  <div class="sub b" style="margin-top:44px;font-size:30px">I spent almost none of these five weeks writing code.<br>I spent them filing tickets, checking evidence, and making calls on taste. That is the job now.</div>
 </section>
 
 <!-- ============================================================ 49 IT'S LIVE -->
@@ -1070,7 +1071,7 @@ ttest_summon_storm.gd    → storm did… something?
       <div class="scrollpane b"><img src="assets/img/steam_store_page.jpg" alt="the live Steam store page"></div>
     </div>
     <div class="col" style="flex:1">
-      <div class="sub b" style="font-size:26px">Captured from <a href="https://store.steampowered.com/app/4937370" target="_blank" rel="noopener">store.steampowered.com</a> — the real page, live today. Every asset on it came out of the same pipeline.</div>
+      <div class="sub b" style="font-size:26px">Captured from <a href="https://store.steampowered.com/app/4937370" target="_blank" rel="noopener">store.steampowered.com</a>. The real page, live today. Every asset on it came out of the same pipeline.</div>
       <div class="sub b" style="font-size:26px"><b>Capsules, trailer, 10 screenshots, animated GIFs</b>, the long-form copy, the tag set, the AI-content disclosure, and the release date.</div>
       <div class="sub b" style="font-size:26px"><b>Localized into 10 languages</b>, plus a demo app and a soundtrack app hanging off the same page.</div>
       <div class="quote b" style="font-size:24px">Scroll far enough and Steam puts it beside Slay the Spire. That's the shelf it's trying to earn.</div>
@@ -1085,7 +1086,7 @@ ttest_summon_storm.gd    → storm did… something?
     <h1 style="font-size:110px">Ask me anything</h1>
     <div class="divider"><div class="rule"></div></div>
     <div class="sub" style="font-size:28px;line-height:2">
-      <b>Steam</b> · <a href="https://store.steampowered.com/app/4937370" target="_blank" rel="noopener">store.steampowered.com/app/4937370</a><br>
+      <b>Steam</b> · <a href="https://store.steampowered.com/app/4937370" target="_blank" rel="noopener">store.steampowered.com/app/4937370</a><span class="gold" style="margin-left:16px"><b>Wishlist now!</b></span><br>
       <b>Jukebox</b> · <a href="https://thepaulbooth.com/warlords-jukebox/" target="_blank" rel="noopener">thepaulbooth.com/warlords-jukebox</a><br>
       <b>itch</b> · <a href="https://thepaulbooth.itch.io/warlords" target="_blank" rel="noopener">thepaulbooth.itch.io/warlords</a><br>
       <b>Me</b> · <a href="https://thepaulbooth.com" target="_blank" rel="noopener">thepaulbooth.com</a> · <i>Do, Make, Learn</i>
@@ -1251,7 +1252,7 @@ vtTg.addEventListener('click',()=>{
   if(vtPlaying){to.play();from.pause();}
   vtVocal=!vtVocal;
   vtTg.textContent=vtVocal?'DROP THE VOCALS':'BRING THEM BACK';
-  vtState.textContent='Tremor of Earth — '+(vtVocal?'with vocals':'instrumental');
+  vtState.textContent='Tremor of Earth · '+(vtVocal?'with vocals':'instrumental');
 });
 
 /* ============ commit chart ============ */
