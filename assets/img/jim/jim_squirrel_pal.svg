@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 150 170">
+  <!-- Uncle Jim's shoulder squirrel: an ordinary, non-cursed squirrel, sitting up on his
+       shoulder mid-chitter. Faces INWARD (toward Jim's head, i.e. to the left). -->
+  <!-- big fluffed tail, sweeping up behind -->
+  <path d="M104 148 Q142 140 138 92 Q134 46 96 40 Q120 58 120 92 Q120 124 96 136 Z"
+        fill="#a98a68" stroke="#5c452c" stroke-width="4" stroke-linejoin="round"/>
+  <path d="M112 132 Q128 112 126 88 Q124 62 104 52" fill="none" stroke="#c9ad8a" stroke-width="4" stroke-linecap="round"/>
+  <!-- haunches + body, sitting up -->
+  <path d="M56 150 Q42 118 52 92 Q62 66 84 68 Q104 70 106 96 Q108 126 96 150 Z"
+        fill="#8f7351" stroke="#5c452c" stroke-width="4" stroke-linejoin="round"/>
+  <path d="M64 142 Q60 118 68 100" fill="none" stroke="#a98a68" stroke-width="3.5" stroke-linecap="round"/>
+  <!-- pale belly -->
+  <path d="M62 146 Q54 120 64 100 Q76 92 84 104 Q88 126 82 148 Z" fill="#e0cdb0" stroke="none"/>
+  <!-- head, turned toward Jim -->
+  <circle cx="66" cy="52" r="24" fill="#9c7f5b" stroke="#5c452c" stroke-width="4"/>
+  <path d="M56 44 q-8 -12 2 -18 q10 -2 10 10" fill="#9c7f5b" stroke="#5c452c" stroke-width="3.5" stroke-linejoin="round"/>
+  <path d="M80 42 q6 -12 -2 -17 q-9 -2 -9 9" fill="#9c7f5b" stroke="#5c452c" stroke-width="3.5" stroke-linejoin="round"/>
+  <path d="M58 36 q-3 -6 1 -9 M76 35 q3 -6 -1 -9" fill="none" stroke="#d8b48a" stroke-width="2.6" stroke-linecap="round"/>
+  <!-- muzzle + the CHITTER: mouth open, tiny teeth, indignant -->
+  <ellipse cx="50" cy="60" rx="12" ry="10" fill="#e0cdb0" stroke="#5c452c" stroke-width="3"/>
+  <path d="M42 62 q6 10 14 4 q-4 -4 -14 -4 z" fill="#5c2b2b" stroke="#3a1c1c" stroke-width="2" stroke-linejoin="round"/>
+  <rect x="45" y="62" width="4" height="4" rx="1" fill="#fff8e8"/>
+  <circle cx="40" cy="55" r="3.4" fill="#2c2018"/>
+  <!-- eye, wide with opinion -->
+  <circle cx="62" cy="48" r="5.2" fill="#1e1a14"/>
+  <circle cx="64" cy="46" r="1.8" fill="#ffffff"/>
+  <!-- little paws, clutching an acorn (of course) -->
+  <path d="M60 82 q-8 4 -6 12 q8 4 14 -2" fill="#9c7f5b" stroke="#5c452c" stroke-width="3" stroke-linejoin="round"/>
+  <ellipse cx="66" cy="92" rx="9" ry="8" fill="#c9a05a" stroke="#5c452c" stroke-width="3"/>
+  <path d="M57 89 q9 -6 18 0" fill="none" stroke="#7a5a2c" stroke-width="3" stroke-linecap="round"/>
+  <path d="M66 84 v-5" stroke="#5c452c" stroke-width="2.6" stroke-linecap="round"/>
+  <!-- chitter marks -->
+  <path d="M26 44 l-9 -6 M24 54 l-11 0 M26 64 l-9 7" stroke="#e8d9a8" stroke-width="3.4" stroke-linecap="round" opacity="0.9"/>
+</svg>

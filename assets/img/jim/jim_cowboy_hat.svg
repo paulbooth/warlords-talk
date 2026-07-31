@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 140">
+  <!-- Uncle Jim's ten-gallon hat: brim wide enough to shade the whole tail -->
+  <path d="M14 104 Q130 66 246 104 Q130 132 14 104 Z" fill="#8a6238" stroke="#3a2818" stroke-width="5" stroke-linejoin="round"/>
+  <path d="M14 104 q-6 -14 12 -14 M246 104 q6 -14 -12 -14" fill="none" stroke="#3a2818" stroke-width="4.5" stroke-linecap="round"/>
+  <path d="M74 96 Q70 26 130 14 Q190 26 186 96 Q130 112 74 96 Z" fill="#9c7245" stroke="#3a2818" stroke-width="5" stroke-linejoin="round"/>
+  <path d="M130 16 L130 92" stroke="#7a5630" stroke-width="5"/>
+  <path d="M76 88 q54 16 108 0 l0 10 q-54 16 -108 0 z" fill="#5a3f24" stroke="#3a2818" stroke-width="4" stroke-linejoin="round"/>
+  <circle cx="188" cy="92" r="9" fill="#e8bc48" stroke="#8a6412" stroke-width="3"/>
+</svg>

@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 300">
+  <!-- Uncle Jim's wizard beard: a long white cataract of a beard, starting at the jaw
+       (top edge) and running down over the chest, forked at the tip. Sits OVER his own
+       stubby beard. Nothing tangled in it — at this size, "detail" just reads as debris. -->
+  <path d="M90 6
+           Q30 14 26 74 Q22 128 44 186 Q58 226 74 262 Q82 282 90 296
+           Q98 282 106 262 Q122 226 136 186 Q158 128 154 74 Q150 14 90 6 Z"
+        fill="#eae6dc" stroke="#a8a196" stroke-width="5" stroke-linejoin="round"/>
+  <!-- the fork at the tip -->
+  <path d="M90 296 Q84 258 70 236 Q80 268 78 292 Z" fill="#d6d0c4" stroke="#a8a196" stroke-width="3.4" stroke-linejoin="round"/>
+  <path d="M90 296 Q96 258 110 236 Q100 268 102 292 Z" fill="#d6d0c4" stroke="#a8a196" stroke-width="3.4" stroke-linejoin="round"/>
+  <!-- combed strands, all the way down -->
+  <path d="M56 60 Q46 130 66 210 M124 60 Q134 130 114 210 M90 44 Q86 150 90 250"
+        fill="none" stroke="#cfc9bd" stroke-width="4" stroke-linecap="round"/>
+  <path d="M40 96 q10 60 26 106 M140 96 q-10 60 -26 106"
+        fill="none" stroke="#d8d3c8" stroke-width="3" stroke-linecap="round"/>
+  <path d="M70 30 q-14 26 -18 60 M110 30 q14 26 18 60"
+        fill="none" stroke="#d8d3c8" stroke-width="3" stroke-linecap="round"/>
+</svg>

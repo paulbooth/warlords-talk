@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 250">
+  <!-- Uncle Jim's wizard hat: the traditional pointy one. The cone is symmetric and rises
+       from the crown of his head — its base (x 66..174) sits WELL INSIDE the brim, the way
+       a real hat does, rather than running out to the brim's edges. Stars are scattered by
+       hand, different sizes and tilts: a wizard sews them on as he finds them. -->
+  <!-- the cone: point dead centre, straight taper, base inside the brim -->
+  <path d="M120 12 L174 220 L66 220 Z"
+        fill="#3a3a86" stroke="#1c1c46" stroke-width="7" stroke-linejoin="round"/>
+  <!-- lit left face, so the cone reads as a volume rather than a flat triangle -->
+  <path d="M120 12 L120 220 L66 220 Z" fill="#4c4ca4" opacity="0.55"/>
+  <path d="M120 20 L120 212" fill="none" stroke="#2e2e70" stroke-width="4" opacity="0.55"/>
+  <!-- stars: scattered, tilted, never in a tidy column -->
+  <g fill="#f0d24a" stroke="#9c7818" stroke-linejoin="round">
+    <path transform="translate(106 168) rotate(-14) scale(1.15)"
+          d="M0 -11 l3.2 7.2 7.8 0.9 -5.8 5.3 1.5 7.8 -6.7 -3.9 -6.7 3.9 1.5 -7.8 -5.8 -5.3 7.8 -0.9 z"
+          stroke-width="2.4"/>
+    <path transform="translate(140 133) rotate(18) scale(0.78)"
+          d="M0 -11 l3.2 7.2 7.8 0.9 -5.8 5.3 1.5 7.8 -6.7 -3.9 -6.7 3.9 1.5 -7.8 -5.8 -5.3 7.8 -0.9 z"
+          stroke-width="2.8"/>
+    <path transform="translate(104 100) rotate(-30) scale(0.62)"
+          d="M0 -11 l3.2 7.2 7.8 0.9 -5.8 5.3 1.5 7.8 -6.7 -3.9 -6.7 3.9 1.5 -7.8 -5.8 -5.3 7.8 -0.9 z"
+          stroke-width="3.4"/>
+    <path transform="translate(128 62) rotate(9) scale(0.44)"
+          d="M0 -11 l3.2 7.2 7.8 0.9 -5.8 5.3 1.5 7.8 -6.7 -3.9 -6.7 3.9 1.5 -7.8 -5.8 -5.3 7.8 -0.9 z"
+          stroke-width="4.4"/>
+  </g>
+  <!-- hatband across the base of the CONE (not the brim) + buckle, sat a little off-centre -->
+  <path d="M69 204 L171 204 L174 222 L66 222 Z"
+        fill="#f0d24a" stroke="#9c7818" stroke-width="3.6" stroke-linejoin="round"/>
+  <rect x="112" y="201" width="26" height="24" rx="3" fill="#c9a02c" stroke="#7a5f22" stroke-width="3.4"/>
+  <!-- brim: wide, gently curled up at the tips -->
+  <path d="M14 230 Q120 202 226 230 Q120 254 14 230 Z"
+        fill="#2c2c6e" stroke="#1c1c46" stroke-width="7" stroke-linejoin="round"/>
+  <path d="M14 230 q-6 -13 11 -14 M226 230 q6 -13 -11 -14" fill="none" stroke="#1c1c46" stroke-width="5.5" stroke-linecap="round"/>
+</svg>

@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 200">
+  <!-- Uncle Jim's trampoline: a battered garden trampoline, seen at a low three-quarter
+       angle, springs still ringing. Pinned to the GROUND (not to Jim), so he bounces and
+       it doesn't — see JimCheckinView.PROPS ("ground" piece + "bounce"). -->
+  <!-- legs, splayed -->
+  <path d="M64 96 L34 176 M356 96 L386 176 M150 122 L128 186 M270 122 L292 186"
+        fill="none" stroke="#3f464e" stroke-width="12" stroke-linecap="round"/>
+  <path d="M34 176 h34 M386 176 h-34 M128 186 h34 M292 186 h-34"
+        fill="none" stroke="#2a2f36" stroke-width="10" stroke-linecap="round"/>
+  <!-- the mat, sagging from a warlord-grade landing -->
+  <ellipse cx="210" cy="96" rx="180" ry="56" fill="#5b636d" stroke="#2a2f36" stroke-width="7"/>
+  <ellipse cx="210" cy="100" rx="142" ry="40" fill="#22262c" stroke="#12151a" stroke-width="5"/>
+  <path d="M96 104 Q210 132 324 104" fill="none" stroke="#3a4048" stroke-width="5" stroke-linecap="round"/>
+  <!-- springs around the rim -->
+  <g stroke="#a9b1ba" stroke-width="5" stroke-linecap="round">
+    <path d="M74 92 l24 4"/><path d="M96 66 l22 10"/><path d="M136 50 l16 14"/>
+    <path d="M188 42 l8 16"/><path d="M244 44 l-6 16"/><path d="M292 54 l-14 14"/>
+    <path d="M330 70 l-20 10"/><path d="M348 92 l-24 4"/>
+    <path d="M96 124 l22 -8"/><path d="M146 142 l14 -14"/><path d="M210 148 v-18"/>
+    <path d="M276 142 l-14 -14"/><path d="M326 124 l-22 -8"/>
+  </g>
+  <!-- pad ring highlight -->
+  <path d="M40 88 Q210 34 380 88" fill="none" stroke="#8d95a0" stroke-width="6" stroke-linecap="round" opacity="0.8"/>
+  <!-- an acorn, jolted loose, mid-air beside the frame -->
+  <ellipse cx="392" cy="60" rx="10" ry="9" fill="#c9a05a" stroke="#7a5a2c" stroke-width="3"/>
+  <path d="M382 57 q10 -7 20 0" fill="none" stroke="#7a5a2c" stroke-width="3" stroke-linecap="round"/>
+</svg>

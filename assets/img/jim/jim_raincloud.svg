@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 300">
+  <!-- Uncle Jim's personal raincloud: one small grey cloud, parked directly over his
+       head, raining exclusively on him. It follows him. It has for years. -->
+  <!-- cloud body -->
+  <path d="M64 108 Q52 66 92 56 Q104 20 148 24 Q184 8 214 36 Q262 34 268 76
+           Q294 88 280 112 Q250 128 200 124 Q140 132 96 126 Q60 124 64 108 Z"
+        fill="#7d8590" stroke="#3f464e" stroke-width="6" stroke-linejoin="round"/>
+  <!-- darker underbelly (the business end) -->
+  <path d="M78 112 Q140 132 200 124 Q248 128 278 112 Q250 148 190 146 Q120 148 78 112 Z"
+        fill="#5b636d" stroke="#3f464e" stroke-width="4" stroke-linejoin="round"/>
+  <!-- lit crown -->
+  <path d="M100 58 Q116 32 152 34 Q186 22 210 44" fill="none" stroke="#a9b1ba" stroke-width="6" stroke-linecap="round"/>
+  <!-- one sarcastic little lightning bolt -->
+  <path d="M168 140 l-18 34 h16 l-12 30 34 -42 h-16 l14 -22 z"
+        fill="#f0d24a" stroke="#9c7818" stroke-width="3.4" stroke-linejoin="round"/>
+  <!-- rain: streaks and droplets, falling straight onto him -->
+  <g stroke="#bcd7e8" stroke-width="6" stroke-linecap="round" opacity="0.9">
+    <path d="M96 150 l-6 40"/>
+    <path d="M124 162 l-6 34"/>
+    <path d="M212 152 l-6 42"/>
+    <path d="M244 146 l-6 32"/>
+    <path d="M140 196 l-5 30"/>
+    <path d="M224 200 l-5 28"/>
+    <path d="M104 214 l-5 26"/>
+    <path d="M256 190 l-5 24"/>
+  </g>
+  <g fill="#bcd7e8" opacity="0.85">
+    <path d="M158 232 q7 12 0 16 q-7 -4 0 -16 z"/>
+    <path d="M196 254 q7 12 0 16 q-7 -4 0 -16 z"/>
+    <path d="M120 262 q7 12 0 16 q-7 -4 0 -16 z"/>
+    <path d="M238 236 q7 12 0 16 q-7 -4 0 -16 z"/>
+  </g>
+</svg>

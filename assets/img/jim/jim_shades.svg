@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 80">
+  <!-- Uncle Jim's shades: worn OVER his little reading spectacles, obviously -->
+  <path d="M8 26 h184" stroke="#141418" stroke-width="7" stroke-linecap="round"/>
+  <rect x="14" y="22" width="72" height="40" rx="12" fill="#17171d" stroke="#000" stroke-width="4"/>
+  <rect x="114" y="22" width="72" height="40" rx="12" fill="#17171d" stroke="#000" stroke-width="4"/>
+  <path d="M86 34 q14 -8 28 0" fill="none" stroke="#141418" stroke-width="7" stroke-linecap="round"/>
+  <path d="M22 52 l24 -22 M30 58 l30 -28" stroke="#7fc9ff" stroke-width="4" stroke-linecap="round" opacity="0.75"/>
+  <path d="M122 52 l24 -22 M130 58 l30 -28" stroke="#7fc9ff" stroke-width="4" stroke-linecap="round" opacity="0.75"/>
+</svg>

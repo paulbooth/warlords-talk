@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 140 160">
+  <!-- SUPER JIM: the chest emblem. A hero's shield bearing the sigil of a squirrel —
+       bushy tail curled into a lightning-bolt sweep, one acorn held high. Worn on the
+       grey t-shirt, so it reads as an iron-on patch that means business. -->
+  <!-- shield -->
+  <path d="M70 4 L132 26 Q132 104 70 156 Q8 104 8 26 Z"
+        fill="#f0c33c" stroke="#7a4a10" stroke-width="6" stroke-linejoin="round"/>
+  <path d="M70 16 L121 34 Q121 100 70 142 Q19 100 19 34 Z"
+        fill="#2a2f6b" stroke="#141838" stroke-width="4" stroke-linejoin="round"/>
+  <!-- the tail: a bushy bolt sweeping up behind -->
+  <path d="M94 122 Q124 106 116 70 Q108 34 76 34 Q98 48 96 74 Q94 100 76 112 Z"
+        fill="#f0c33c" stroke="#141838" stroke-width="4" stroke-linejoin="round"/>
+  <path d="M98 108 Q110 88 106 66 Q102 46 86 42" fill="none" stroke="#fff0b8" stroke-width="4" stroke-linecap="round"/>
+  <!-- the hero, sitting up, chest out -->
+  <path d="M44 126 Q34 100 42 78 Q50 56 68 58 Q86 60 88 82 Q90 108 78 126 Z"
+        fill="#f0c33c" stroke="#141838" stroke-width="4" stroke-linejoin="round"/>
+  <!-- head + ear tufts -->
+  <circle cx="54" cy="52" r="18" fill="#f0c33c" stroke="#141838" stroke-width="4"/>
+  <path d="M44 44 q-7 -12 2 -16 q9 -1 8 10" fill="#f0c33c" stroke="#141838" stroke-width="3.4" stroke-linejoin="round"/>
+  <path d="M66 42 q6 -12 -3 -15 q-8 -1 -7 10" fill="#f0c33c" stroke="#141838" stroke-width="3.4" stroke-linejoin="round"/>
+  <!-- a heroic mask, obviously -->
+  <path d="M38 50 q16 -8 32 -2 l-2 10 q-14 -6 -28 2 z" fill="#141838"/>
+  <circle cx="47" cy="53" r="3" fill="#ff5a3a"/>
+  <circle cx="63" cy="53" r="3" fill="#ff5a3a"/>
+  <!-- fist raised, acorn held aloft -->
+  <path d="M74 74 q14 -10 20 -26" fill="none" stroke="#f0c33c" stroke-width="9" stroke-linecap="round"/>
+  <path d="M74 74 q14 -10 20 -26" fill="none" stroke="#141838" stroke-width="3.4" stroke-linecap="round" opacity="0.35"/>
+  <ellipse cx="98" cy="42" rx="11" ry="10" fill="#f0c33c" stroke="#141838" stroke-width="3.6"/>
+  <path d="M87 40 q11 -8 22 0" fill="none" stroke="#141838" stroke-width="3.6" stroke-linecap="round"/>
+  <path d="M98 32 v-6" stroke="#141838" stroke-width="3" stroke-linecap="round"/>
+</svg>

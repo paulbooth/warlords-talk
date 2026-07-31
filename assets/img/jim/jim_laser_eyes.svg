@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 140">
+  <!-- SUPER JIM: eye-beams. Authored around Jim's ACTUAL pupils, measured off
+       assets/art/uncle_jim_squirrel.png (896x1190): left pupil (405,171), right pupil
+       (455,170) — only ~50 source px apart, behind his little spectacles. In this canvas
+       the pupils sit at (164,70) and (196,70), i.e. dead centre and CLOSE together, so
+       the beams leave the pupils themselves rather than his eyebrows. Placement (u,v,w)
+       in JimCheckinView.PROPS is derived from those same numbers — change one, change
+       both. -->
+  <defs>
+    <linearGradient id="beamL" x1="1" y1="0" x2="0" y2="0">
+      <stop offset="0" stop-color="#ff2a1c" stop-opacity="0.95"/>
+      <stop offset="0.55" stop-color="#ff6a3a" stop-opacity="0.7"/>
+      <stop offset="1" stop-color="#ffd08a" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="beamR" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#ff2a1c" stop-opacity="0.95"/>
+      <stop offset="0.55" stop-color="#ff6a3a" stop-opacity="0.7"/>
+      <stop offset="1" stop-color="#ffd08a" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <!-- outer glow cones, from the pupils outward and a little down -->
+  <path d="M164 70 L2 104 L2 48 Z" fill="url(#beamL)" opacity="0.5"/>
+  <path d="M196 70 L358 104 L358 48 Z" fill="url(#beamR)" opacity="0.5"/>
+  <!-- hot cores -->
+  <path d="M164 70 L4 92 L4 58 Z" fill="url(#beamL)"/>
+  <path d="M196 70 L356 92 L356 58 Z" fill="url(#beamR)"/>
+  <path d="M164 70 L6 80 L6 64 Z" fill="#fff3e0" opacity="0.9"/>
+  <path d="M196 70 L354 80 L354 64 Z" fill="#fff3e0" opacity="0.9"/>
+  <!-- the pupils themselves: small (his eyes ARE small), white-hot in a red corona -->
+  <circle cx="164" cy="70" r="9" fill="#ff3a24" opacity="0.5"/>
+  <circle cx="196" cy="70" r="9" fill="#ff3a24" opacity="0.5"/>
+  <circle cx="164" cy="70" r="5.4" fill="#ff6a3a"/>
+  <circle cx="196" cy="70" r="5.4" fill="#ff6a3a"/>
+  <circle cx="164" cy="70" r="2.8" fill="#fffaf0"/>
+  <circle cx="196" cy="70" r="2.8" fill="#fffaf0"/>
+  <!-- sparks kicked up along the beams -->
+  <circle cx="104" cy="78" r="2.6" fill="#ffd08a" opacity="0.9"/>
+  <circle cx="58" cy="84" r="2" fill="#ffb066" opacity="0.8"/>
+  <circle cx="256" cy="78" r="2.6" fill="#ffd08a" opacity="0.9"/>
+  <circle cx="302" cy="84" r="2" fill="#ffb066" opacity="0.8"/>
+</svg>

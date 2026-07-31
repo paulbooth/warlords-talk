@@ -274,6 +274,35 @@ body.ready #pgnum{color:var(--gold);text-shadow:0 0 14px rgba(217,168,78,.4)}
    honour the same preference. */
 @media (prefers-reduced-motion:reduce){.fx>i{animation:none}}
 
+/* ---- Uncle Jim's costume party -----------------------------------------------
+   All twelve check-in costumes, composited live from the game's own prop SVGs using
+   the same anchors JimCheckinView uses: u/v are the prop's CENTRE and w its width,
+   each a fraction of the portrait. So the box is held at the portrait's 896x1190 and
+   those numbers become percentages directly. Built in the DOM rather than baked to a
+   GIF: it stays sharp on a projector and costs a few KB of vector, not MB of frames.
+   The bob lives on .body so a ground prop (the trampoline) stays put while he does. */
+.jimparty{position:relative;display:grid;grid-template-columns:repeat(4,1fr);gap:4px;
+  padding:14px 10px 22px;overflow:hidden;background:radial-gradient(70% 60% at 50% 40%,#2a2013,#171009)}
+.jim{position:relative;aspect-ratio:896/1190}
+.jim .body{position:absolute;inset:0;transform-origin:50% 92%;
+  animation:jim-bob 1.1s ease-in-out calc(var(--i) * -137ms) infinite}
+.jim.hop .body{animation:jim-hop .6s cubic-bezier(.3,0,.4,1) calc(var(--i) * -137ms) infinite}
+/* These sit inside a .frame, whose `img{width:100%;height:100%;object-fit:cover}`
+   would stretch every prop to the full portrait box. Props carry only an inline
+   width; height must stay auto or the SVG loses its aspect. */
+.jim img{position:absolute;display:block;width:auto;height:auto;object-fit:contain}
+.jim img.p{left:0;top:0;width:100%;height:100%}
+@keyframes jim-bob{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-7%) rotate(3deg)}}
+@keyframes jim-hop{0%,100%{transform:translateY(0)}45%{transform:translateY(-17%)}}
+.confetti{position:absolute;inset:0;pointer-events:none}
+.confetti i{position:absolute;top:-30px;width:8px;height:13px;border-radius:2px;
+  animation:jim-conf linear infinite}
+@keyframes jim-conf{0%{transform:translateY(0) rotate(0)}100%{transform:translateY(700px) rotate(900deg)}}
+@media (prefers-reduced-motion:reduce){
+  .jim .body,.jim.hop .body,.confetti i{animation:none}
+  .confetti{display:none}
+}
+
 /* talking points: a heading you speak to, with anchors rather than a script */
 .pts{margin-top:20px;display:flex;flex-direction:column;gap:15px}
 .pts li{list-style:none;position:relative;padding-left:24px;font-size:25px;line-height:1.32;color:var(--tx2)}
@@ -1131,6 +1160,7 @@ ttest_summon_storm.gd    → storm did… something?
   <h2>Where it goes from here</h2>
   <div class="row">
     <div class="col grow" style="gap:24px">
+      <div class="chip b" style="font-size:25px;padding:16px 26px"><b>Marketing, and wishlists above all</b> · the biggest job left, and the one I have done <b>least</b> of</div>
       <div class="chip b" style="font-size:25px;padding:16px 26px"><b>Pad-native overhaul</b> · controller play without a cursor</div>
       <div class="chip b" style="font-size:25px;padding:16px 26px"><b>Demo approval → Steam launch</b> · through Valve's queue, then the Release button</div>
       <div class="chip b" style="font-size:25px;padding:16px 26px"><b>Trading cards unlock</b> post-release; OST goes live alongside</div>
@@ -1138,8 +1168,8 @@ ttest_summon_storm.gd    → storm did… something?
       <div class="chip b" style="font-size:25px;padding:16px 26px"><b>More of everything</b> · the factory doesn't stop: content is a ticket away</div>
     </div>
     <div class="col" style="flex:none;width:600px">
-      <div class="frame b"><img src="assets/img/boss_dead_rise.jpg"></div>
-      <div class="cap b">Wishlist it. Uncle Jim is watching.</div>
+      <div class="frame b"><div class="jimparty" id="jimparty"><div class="confetti"></div></div></div>
+      <div class="cap b">Every costume Uncle Jim owns, celebrating early. Wishlist it and make him right.</div>
     </div>
   </div>
 </section>
@@ -1410,6 +1440,51 @@ document.querySelectorAll('[data-fx]').forEach(el=>{
     el.appendChild(g);
   });
 });
+
+/* ============ Uncle Jim's costume party ============
+   Verbatim from JimCheckinView.PROPS: u/v are the prop's centre and w its width,
+   as fractions of the portrait, so each becomes a percentage against a box held at
+   the portrait's aspect. `ground` props hang outside the bob, and the one he stands
+   ON gets him hopping instead. */
+(function(){
+  const P='assets/img/jim/', E=[0.480,0.143], R=[0.508,0.143];   // eye midpoint, right eye
+  const COSTUMES=[
+    {id:'party_hat',   props:[['jim_party_hat.svg',0.474,0.040,0.14]]},
+    {id:'shades',      props:[['jim_shades.svg',E[0],E[1],0.19]]},
+    {id:'cowboy_hat',  props:[['jim_cowboy_hat.svg',0.478,0.066,0.44]]},
+    {id:'disguise',    props:[['jim_disguise.svg',E[0],0.164,0.279]]},
+    {id:'wizard',      props:[['jim_wizard_hat.svg',0.470,-0.036,0.40],['jim_wizard_beard.svg',0.478,0.305,0.185]]},
+    {id:'viking_helm', props:[['jim_viking_helm.svg',0.478,0.084,0.38]]},
+    {id:'eyepatch',    props:[['jim_eyepatch.svg',R[0],R[1],0.216]]},
+    {id:'monocle',     props:[['jim_monocle.svg',R[0],R[1],0.10]]},
+    {id:'super_jim',   props:[['jim_laser_eyes.svg',E[0],E[1],0.628],['jim_emblem.svg',0.500,0.368,0.17]]},
+    {id:'squirrel_pal',props:[['jim_squirrel_pal.svg',0.640,0.232,0.20]]},
+    {id:'raincloud',   props:[['jim_raincloud.svg',0.478,0.010,0.52]]},
+    {id:'trampoline',  hop:true, ground:[['jim_trampoline.svg',0.478,0.905,0.72]], props:[]},
+  ];
+  const host=document.getElementById('jimparty');
+  if(host){
+    const pc=(v)=>(v*100).toFixed(2)+'%';
+    const prop=([f,u,v,w])=>`<img src="${P}${f}" alt="" style="left:${pc(u)};top:${pc(v)};width:${pc(w)};transform:translate(-50%,-50%)">`;
+    COSTUMES.forEach((c,i)=>{
+      const d=document.createElement('div');
+      d.className='jim'+(c.hop?' hop':'');
+      d.style.setProperty('--i',i);
+      d.innerHTML=`<div class="body"><img class="p" src="${P}jim.png" alt="Uncle Jim">`
+        +c.props.map(prop).join('')+`</div>`+(c.ground||[]).map(prop).join('');
+      host.appendChild(d);
+    });
+    const conf=host.querySelector('.confetti'),hues=['#d9a84e','#b03a34','#7da05a','#f2cd7e','#e6a6f0','#8fd8ff'];
+    for(let i=0;i<34;i++){
+      const s=document.createElement('i');
+      s.style.left=(Math.random()*100)+'%';
+      s.style.background=hues[i%hues.length];
+      s.style.animationDuration=(2.4+Math.random()*2.2)+'s';
+      s.style.animationDelay=(-Math.random()*4)+'s';
+      conf.appendChild(s);
+    }
+  }
+})();
 
 /* ============ embers ============ */
 const cv=document.getElementById('embers'),cx=cv.getContext('2d');cv.width=1920;cv.height=1080;
