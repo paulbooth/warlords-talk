@@ -234,6 +234,46 @@ body.ready #pgnum{color:var(--gold);text-shadow:0 0 14px rgba(217,168,78,.4)}
 
 .footer-note{font-size:24px;color:var(--tx3);text-align:center;margin-top:18px;font-style:italic}
 
+/* ---- event text effects ------------------------------------------------------
+   The events and taunts animate their own copy with Godot BBCode: [wave], [shake],
+   [rainbow], [pulse] and [tornado]. These are those five rebuilt per glyph, so the
+   deck can show the trick rather than describe it. Each glyph carries its index as
+   --i and turns it into a NEGATIVE delay, which starts it partway through the cycle:
+   that offset is the whole illusion, and it is what makes a wave travel along a word
+   instead of the letters bobbing in unison.
+   The delay lives inside each `animation` shorthand on purpose. Declared separately
+   it would be reset to 0s by whichever shorthand came after it. */
+.fx{display:inline-block}
+.fx>i{display:inline-block;font-style:inherit;font-weight:inherit;white-space:pre}
+.fx-wave>i{animation:fx-wave 1.9s ease-in-out calc(var(--i) * -70ms) infinite}
+@keyframes fx-wave{0%,100%{transform:translateY(0)}50%{transform:translateY(calc(var(--amp,.20em) * -1))}}
+/* steps(1,end) holds each segment on its own start value, so the glyph JUMPS
+   between five scattered offsets rather than gliding between two. The engine
+   re-rolls a random offset per frame; five held positions at 10 a second is the
+   closest a keyframe list gets to that. */
+/* --sh is em-based, so the same value that reads as a nervous tremor at 25px
+   becomes a 6px wobble on a 118px display line. Override it on big text. */
+.fx-shake{--sh:.05em}
+.fx-shake>i{animation:fx-shake .5s steps(1,end) calc(var(--i) * -37ms) infinite}
+@keyframes fx-shake{
+  0%{transform:translate(var(--sh),calc(var(--sh) * -.8))}
+  20%{transform:translate(calc(var(--sh) * -.8),var(--sh))}
+  40%{transform:translate(calc(var(--sh) * .9),calc(var(--sh) * .7))}
+  60%{transform:translate(calc(var(--sh) * -1),calc(var(--sh) * -.6))}
+  80%{transform:translate(calc(var(--sh) * .5),calc(var(--sh) * -1))}}
+.fx-rainbow>i{color:#ff8a5c;animation:fx-rainbow 3s linear calc(var(--i) * -90ms) infinite}
+@keyframes fx-rainbow{to{filter:hue-rotate(360deg)}}
+.fx-tornado>i{animation:fx-tornado 2.4s linear calc(var(--i) * -150ms) infinite}
+@keyframes fx-tornado{0%{transform:translate(var(--rad,.09em),0)}25%{transform:translate(0,var(--rad,.09em))}
+  50%{transform:translate(calc(var(--rad,.09em) * -1),0)}75%{transform:translate(0,calc(var(--rad,.09em) * -1))}
+  100%{transform:translate(var(--rad,.09em),0)}}
+.fx-pulse>i{animation:fx-pulse 1.7s ease-in-out calc(var(--i) * -120ms) infinite}
+@keyframes fx-pulse{0%,100%{opacity:1;text-shadow:none}
+  50%{opacity:.74;text-shadow:0 0 34px rgba(212,87,78,.8)}}
+/* The game ships a reduce-motion setting; a deck that borrows its effects should
+   honour the same preference. */
+@media (prefers-reduced-motion:reduce){.fx>i{animation:none}}
+
 /* talking points: a heading you speak to, with anchors rather than a script */
 .pts{margin-top:20px;display:flex;flex-direction:column;gap:15px}
 .pts li{list-style:none;position:relative;padding-left:24px;font-size:25px;line-height:1.32;color:var(--tx2)}
@@ -308,7 +348,7 @@ a:hover{color:#fff0cf;text-decoration-color:var(--gold)}
   <div class="titlebg"></div>
   <div class="overbg" style="display:flex;flex-direction:column;align-items:center">
     <img src="assets/img/library_logo_1280.png" alt="Warlords" style="width:860px;filter:drop-shadow(0 12px 40px rgba(0,0,0,.8))">
-    <div style="font-family:var(--disp);font-size:30px;letter-spacing:.30em;color:var(--gold-hi);margin-top:44px;text-transform:uppercase">Every card is an army</div>
+    <div style="font-family:var(--disp);font-size:30px;letter-spacing:.30em;color:var(--gold-hi);margin-top:44px;text-transform:uppercase;--amp:.13em" data-fx="wave">Every card is an army</div>
     <div class="divider" style="margin-top:8px"><div class="rule"></div></div>
     <div class="sub" style="font-size:34px">One human. A fleet of AI agents. <b>35 days.</b></div>
     <div class="small" style="margin-top:70px;font-family:var(--disp);letter-spacing:.22em;text-transform:uppercase">Paul Booth · for the ByteDance crew · July 2026</div>
@@ -375,7 +415,7 @@ a:hover{color:#fff0cf;text-decoration-color:var(--gold)}
     <div class="stat b"><div class="v">11</div><div class="l">languages, 7,063 strings each</div></div>
     <div class="stat b"><div class="v">4-player</div><div class="l">online co-op, Steam or direct IP</div></div>
     <div class="stat b"><div class="v">119,020</div><div class="l">lines of GDScript, and only 4 hand-authored scenes</div></div>
-    <div class="stat b crim"><div class="v">0</div><div class="l">lines of game code written by hand</div></div>
+    <div class="stat b crim"><div class="v" data-fx="pulse">0</div><div class="l">lines of game code written by hand</div></div>
   </div>
   <div class="footer-note b" style="font-size:25px">Under all of it: full gamepad play, text size to Huge, reduce motion, colorblind-safe change marks, autosave at every map node.</div>
 </section>
@@ -449,11 +489,13 @@ a:hover{color:#fff0cf;text-decoration-color:var(--gold)}
 <!-- ============================================================ 11 EVENTS -->
 <section class="slide" data-act="I · The Game">
   <div class="kick">Between battles</div>
-  <h2>The events are <em>unhinged</em>, and you actually play them</h2>
+  <!-- The slide about the events borrows their markup, so the effects are the
+       exhibit rather than decoration. -->
+  <h2>The events are <em data-fx="rainbow">unhinged</em>, and you actually play them</h2>
   <div class="row" style="gap:30px">
     <div class="col" style="flex:1.35">
       <div class="g3">
-        <div class="tile b"><div class="frame"><video src="assets/vid/wheel.mp4" muted loop playsinline></video></div><div class="tl">Wheel of Fate</div></div>
+        <div class="tile b"><div class="frame"><video src="assets/vid/wheel.mp4" muted loop playsinline></video></div><div class="tl" data-fx="tornado" style="--rad:.07em">Wheel of Fate</div></div>
         <div class="tile b"><div class="frame"><img src="assets/shots/minigame_dice_settled.jpg" style="max-height:250px"></div><div class="tl">Knucklebones duel</div></div>
         <div class="tile b"><div class="frame"><img src="assets/img/ev_slots.jpg" style="max-height:250px"></div><div class="tl">One-Armed Bandit</div></div>
         <div class="tile b"><div class="frame"><img src="assets/img/ev_casino.jpg" style="max-height:250px"></div><div class="tl">Bone Casino</div></div>
@@ -469,7 +511,7 @@ a:hover{color:#fff0cf;text-decoration-color:var(--gold)}
         <span class="chip"><b>Press-your-luck</b></span><span class="chip"><b>Slots</b></span><span class="chip"><b>Pachinko</b></span>
         <span class="chip"><b>Shell game</b></span>
       </div>
-      <div class="sub b" style="font-size:25px">The dice are rigid-body physics. The wheel is honest. The mimic <b>lures you</b> with treasure. Every event has bespoke painted art, all 129 of them.</div>
+      <div class="sub b" style="font-size:25px">The dice are rigid-body physics. The wheel is honest. The mimic <b data-fx="shake">lures you</b> with treasure. Every event has bespoke painted art, all 129 of them.</div>
     </div>
   </div>
 </section>
@@ -869,18 +911,6 @@ had no strong genre pull."</div></div>
   <div class="cap b">Same warlord, same plains, same five cards in hand, same 80 HP and 99 gold. I wrote a capture script that re-stages the old screenshot in today's build. Everything that moved, moved on its own.</div>
 </section>
 
-<!-- ============================================================ 36 EVOLUTION MAP -->
-<section class="slide" data-act="IV · 35 Days">
-  <div class="kick">Evolution · drag the handle</div>
-  <h2>The map learns to be a place</h2>
-  <div class="baw"><div class="ba b" data-ba>
-    <img class="under" src="assets/img/map.jpg">
-    <div class="top"><img src="assets/history/map_v1.jpg"></div>
-    <div class="handle"></div>
-    <div class="tagA">July 7</div><div class="tagB">Today</div>
-  </div></div>
-</section>
-
 <!-- ============================================================ 37 EVOLUTION GRID -->
 <section class="slide" data-act="IV · 35 Days">
   <div class="kick">Evolution</div>
@@ -953,7 +983,7 @@ had no strong genre pull."</div></div>
 <!-- ============================================================ 43 DIVIDER VI -->
 <section class="slide center divider" data-embers data-act="VI · Scars">
   <div class="num">ACT VI</div>
-  <h1>Scars</h1>
+  <h1 data-fx="shake" style="--sh:.014em">Scars</h1>
   <div class="rule"></div>
   <div class="sub">The parts that hurt. You'll want these if you try this.</div>
 </section>
@@ -983,10 +1013,15 @@ ttest_summon_storm.gd    → storm did… something?
 <section class="slide" data-act="VI · Scars">
   <div class="kick">The rest of the scar tissue</div>
   <h2>What was actually hard</h2>
-  <div class="stats" style="grid-template-columns:repeat(3,1fr);gap:34px">
-    <div class="stat b" style="text-align:left;padding:40px 36px"><div class="v" style="font-size:40px">The Twins' duet</div><div class="l" style="font-size:29px;margin-top:18px">Suno kept blending two singers into one voice. The fix reads like a legal contract: “THE MAN … THE WOMAN … the singer NEVER changes mid-section.” Take after take.</div></div>
-    <div class="stat b" style="text-align:left;padding:40px 36px"><div class="v" style="font-size:40px">Valve's clock</div><div class="l" style="font-size:29px;margin-top:18px">Every review round costs days: demo flagged for undisclosed online play, OST cover bounced for a missing logo. Automation can't speed up a queue.</div></div>
-    <div class="stat b" style="text-align:left;padding:40px 36px"><div class="v" style="font-size:40px">The last 10%</div><div class="l" style="font-size:29px;margin-top:18px">Polish still takes the longest. AI compresses the first 90% massively; the final feel (juice, readability, fairness) is still handcraft, one build at a time.</div></div>
+  <!-- Six again. Another wall you show rather than read, so thinning it bought
+       nothing and only made the scar tissue look thinner than it was. -->
+  <div class="stats" style="grid-template-columns:repeat(3,1fr);gap:28px">
+    <div class="stat b" style="text-align:left;padding:28px"><div class="v" style="font-size:32px">The Twins' duet</div><div class="l" style="font-size:24px;margin-top:14px">Suno kept blending two singers into one voice. The fix reads like a legal contract: “THE MAN … THE WOMAN … the singer NEVER changes mid-section.” Take after take.</div></div>
+    <div class="stat b" style="text-align:left;padding:28px"><div class="v" style="font-size:32px">Balance at scale</div><div class="l" style="font-size:24px;margin-top:14px">563 cards × 41 lords × 21 packs. Humans can't test that. The answer was the simulator, personas, and paired-seed statistics.</div></div>
+    <div class="stat b" style="text-align:left;padding:28px"><div class="v" style="font-size:32px">Boomerang bugs</div><div class="l" style="font-size:24px;margin-top:14px">Some bugs return. Attack-speed resets, tooltip clipping, untranslated strings. The cure is a regression driver per fix, 119 of them now.</div></div>
+    <div class="stat b" style="text-align:left;padding:28px"><div class="v" style="font-size:32px">Token ceilings</div><div class="l" style="font-size:24px;margin-top:14px">The fleet is budget-bound. Size labels route small work to cheap models; big pushes wait for the window. “make it ten since my tokens just refreshed.”</div></div>
+    <div class="stat b" style="text-align:left;padding:28px"><div class="v" style="font-size:32px">Valve's clock</div><div class="l" style="font-size:24px;margin-top:14px">Every review round costs days: demo flagged for undisclosed online play, OST cover bounced for a missing logo. Automation can't speed up a queue.</div></div>
+    <div class="stat b" style="text-align:left;padding:28px"><div class="v" style="font-size:32px">The last 10%</div><div class="l" style="font-size:24px;margin-top:14px">Polish still takes the longest. AI compresses the first 90% massively; the final feel (juice, readability, fairness) is still handcraft, one build at a time.</div></div>
   </div>
 </section>
 
@@ -1140,7 +1175,7 @@ ttest_summon_storm.gd    → storm did… something?
     <h1 style="font-size:110px">Ask me anything</h1>
     <div class="divider"><div class="rule"></div></div>
     <div class="sub" style="font-size:28px;line-height:2">
-      <b>Steam</b> · <a href="https://store.steampowered.com/app/4937370" target="_blank" rel="noopener">store.steampowered.com/app/4937370</a><span class="gold" style="margin-left:16px"><b>Wishlist now!</b></span><br>
+      <b>Steam</b> · <a href="https://store.steampowered.com/app/4937370" target="_blank" rel="noopener">store.steampowered.com/app/4937370</a><span class="gold" style="margin-left:16px"><b data-fx="rainbow">Wishlist now!</b></span><br>
       <b>Jukebox</b> · <a href="https://thepaulbooth.com/warlords-jukebox/" target="_blank" rel="noopener">thepaulbooth.com/warlords-jukebox</a><br>
       <b>itch</b> · <a href="https://thepaulbooth.itch.io/warlords" target="_blank" rel="noopener">thepaulbooth.itch.io/warlords</a><br>
       <b>Me</b> · <a href="https://thepaulbooth.com" target="_blank" rel="noopener">thepaulbooth.com</a> · <i>Do, Make, Learn</i>
@@ -1360,6 +1395,21 @@ addEventListener('touchend',e=>{
   const t=e.changedTouches[0],dx=t.clientX-tx,dy=t.clientY-ty;
   if(Math.abs(dx)>60&&Math.abs(dx)>Math.abs(dy)*1.4){e.preventDefault();dx<0?next():prev();}
 },{passive:false});
+
+/* ============ event text effects ============
+   One span per glyph so each can carry its own index. The CSS turns that into the
+   phase offset; without it every letter would animate in lockstep. */
+document.querySelectorAll('[data-fx]').forEach(el=>{
+  const txt=el.textContent;
+  el.textContent='';
+  el.classList.add('fx','fx-'+el.dataset.fx);
+  [...txt].forEach((ch,i)=>{                    // spread, so an emoji stays one glyph
+    const g=document.createElement('i');
+    g.textContent=ch;
+    g.style.setProperty('--i',i);
+    el.appendChild(g);
+  });
+});
 
 /* ============ embers ============ */
 const cv=document.getElementById('embers'),cx=cv.getContext('2d');cv.width=1920;cv.height=1080;
