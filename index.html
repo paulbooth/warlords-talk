@@ -164,14 +164,9 @@ table.tb{border-collapse:collapse;width:100%}
 #pgnum{position:absolute;right:26px;bottom:16px;font-family:var(--disp);font-size:16px;letter-spacing:.2em;color:var(--tx3);z-index:50;
   transition:color .3s ease,text-shadow .3s ease}
 /* ---- "this slide is finished" tell -------------------------------------------
-   Presenter-facing only: while a slide still has builds queued the chrome stays
-   dim, and the moment the last one lands the page number warms to gold and a bead
-   settles on the tip of the progress bar. Both are static states, never a pulse —
-   motion down here would pull the room's eyes off the slide. Bead lit = the next
-   click leaves this slide. */
-#bar::after{content:'';position:absolute;right:-2px;bottom:0;width:9px;height:9px;border-radius:50%;
-  background:var(--gold-hi);opacity:0;transition:opacity .3s ease}
-body.ready #bar::after{opacity:1;box-shadow:0 0 10px 2px rgba(242,205,126,.5)}
+   Presenter-facing only: the page number stays dim brown while anything is still
+   arriving and warms to gold once the last item has settled. A static state, never
+   a pulse, because motion down here would pull the room's eyes off the slide. */
 body.ready #pgnum{color:var(--gold);text-shadow:0 0 14px rgba(217,168,78,.4)}
 
 /* ---- scrubber ----------------------------------------------------------------
@@ -238,6 +233,12 @@ body.ready #pgnum{color:var(--gold);text-shadow:0 0 14px rgba(217,168,78,.4)}
 .hfan{height:34px;width:72%;border:2px solid var(--gold-dim);border-bottom:none;border-radius:14px 14px 0 0}
 
 .footer-note{font-size:24px;color:var(--tx3);text-align:center;margin-top:18px;font-style:italic}
+
+/* talking points: a heading you speak to, with anchors rather than a script */
+.pts{margin-top:20px;display:flex;flex-direction:column;gap:15px}
+.pts li{list-style:none;position:relative;padding-left:24px;font-size:25px;line-height:1.32;color:var(--tx2)}
+.pts li::before{content:'';position:absolute;left:0;top:.6em;width:8px;height:8px;border-radius:50%;background:var(--gold-dim)}
+.pts li b{color:var(--gold-hi);font-weight:600}
 /* ---- phones ----------------------------------------------------------------
    The stage is a fixed 1920x1080 scaled to fit, so a portrait phone would render
    it as a postage stamp. Ask for landscape instead of shrinking the deck. Gated on
@@ -983,7 +984,70 @@ ttest_summon_storm.gd    → storm did… something?
   </div>
 </section>
 
-<!-- ============================================================ 46 LESSONS -->
+<!-- ============================================================ 46 REFLECTION A
+     Headings to speak to. The bullets are anchors, not a script. -->
+<section class="slide" data-act="VI · Scars">
+  <div class="kick">Five weeks with a fleet</div>
+  <h2>What it's actually <em>like</em></h2>
+  <div class="stats" style="grid-template-columns:repeat(3,1fr);gap:34px">
+    <div class="stat b" style="text-align:left;padding:34px 30px">
+      <div class="v" style="font-size:38px">Speed</div>
+      <ul class="pts">
+        <li>One prompt returned a <b>fanned hand of cards</b>, each rotated into place, neighbours sliding aside as the hovered one lifts and grows.</li>
+        <li>Time to a working thing has <b>never been shorter</b>.</li>
+        <li>Bloat is one prompt away, and so is any small delight. <b>Saying no</b> is the hard part now.</li>
+      </ul>
+    </div>
+    <div class="stat b" style="text-align:left;padding:34px 30px">
+      <div class="v" style="font-size:38px">It snags, and it forgets</div>
+      <ul class="pts">
+        <li>I say <b>finish the whole list</b>, and <b>no flavor text on cards</b>, over and over.</li>
+        <li>Verbose by default, in code and in prose. Most of my editing is cutting.</li>
+        <li>Em dashes are only the surface. The <b>whole cadence</b> announces itself.</li>
+      </ul>
+    </div>
+    <div class="stat b" style="text-align:left;padding:34px 30px">
+      <div class="v" style="font-size:38px">What it does to learning</div>
+      <ul class="pts">
+        <li><b>Tutorials are dead weight.</b> Ask, and it teaches while it builds.</li>
+        <li>Assembly-level tuning, nodeType 9, git bisect. What I skip learning is mostly what I <b>no longer need to know</b>, and that still reads as a loss.</li>
+        <li>It feels more like <b>playing a game</b> than writing code.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ 47 REFLECTION B -->
+<section class="slide" data-act="VI · Scars">
+  <div class="kick">Five weeks with a fleet</div>
+  <h2>What I'd carry to the <em>next one</em></h2>
+  <div class="stats" style="grid-template-columns:repeat(3,1fr);gap:34px">
+    <div class="stat b" style="text-align:left;padding:34px 30px">
+      <div class="v" style="font-size:38px">Always automate</div>
+      <ul class="pts">
+        <li>It handed me a tidy file of achievements and said a human has to upload them. <b>No.</b> Write the Playwright script and drive the browser yourself.</li>
+        <li>The <b>rig is what transfers</b> between projects. Syntax in your head is not.</li>
+      </ul>
+    </div>
+    <div class="stat b" style="text-align:left;padding:34px 30px">
+      <div class="v" style="font-size:38px">Spend the scarce model well</div>
+      <ul class="pts">
+        <li><b>Fable</b> is the sharpest and the most rationed. It wrote the multiplayer plan. <b>Opus</b> built it.</li>
+        <li>Claude, Gemini and Suno each win at something different. The results came from <b>stacking them</b> with local tools.</li>
+      </ul>
+    </div>
+    <div class="stat b" style="text-align:left;padding:34px 30px">
+      <div class="v" style="font-size:38px">The hard part never moved</div>
+      <ul class="pts">
+        <li>Almost nothing fails because it <b>could not be built</b>. It fails because someone stopped.</li>
+        <li>Motivation, communication and vision setting matter <b>more</b> now, not less.</li>
+        <li>Start from the goal. Learn, earn, or make your friends laugh. <b>Name the problem</b>, not the thing you want to build.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ 48 LESSONS -->
 <section class="slide" data-act="VI · Scars">
   <div class="kick">If you try this</div>
   <h2>What I'd tell your team</h2>
@@ -1151,11 +1215,15 @@ function buildGroups(s){
   }
   return out;
 }
-/* Sweep rather than a dump: the step shrinks as the group grows so a twelve-tile
-   wall still finishes in about a second. */
+/* The group plays itself out one item at a time, so a click buys a whole run of
+   arrivals instead of a single line. The spacing is wide enough that each item
+   reads as its own beat, and tightens as the group grows so a thirteen-tile wall
+   still lands in about three seconds. */
+const FADE=500;                                    // matches the .b transition
 function revealGroup(g){
-  const ms=Math.max(45,Math.min(120,700/g.length));
-  g.forEach((e,i)=>{e.style.transitionDelay=(i*ms)+'ms';e.classList.add('on');});
+  const gap=Math.max(200,Math.min(600,2800/g.length));
+  g.forEach((e,i)=>{e.style.transitionDelay=(i*gap)+'ms';e.classList.add('on');});
+  return (g.length-1)*gap+FADE;                    // when the last one has settled
 }
 function show(i,revealAll){
   i=Math.max(0,Math.min(slides.length-1,i));
@@ -1165,14 +1233,21 @@ function show(i,revealAll){
   });
   if(cur!==i) stopAllAudio();
   cur=i;
-  const bs=buildGroups(slides[i]);
-  slides[i].querySelectorAll('.b').forEach(b=>{
-    b.style.transitionDelay='';                 // a stale stagger would hold it back
-    b.classList.toggle('on',revealAll||false);
-  });
+  const bs=buildGroups(slides[i]),bl=slides[i].querySelectorAll('.b');
+  if(revealAll){
+    bl.forEach(b=>{b.style.transitionDelay='';b.classList.add('on');});
+  }else{
+    /* Returning to a slide already played, the old items would animate OUT across
+       the new slide's entrance. Strip them with transitions off so a slide always
+       opens from its true initial state. */
+    bl.forEach(b=>{b.style.transition='none';b.style.transitionDelay='';b.classList.remove('on');});
+    void slides[i].offsetHeight;                // commit the hidden state unanimated
+    bl.forEach(b=>{b.style.transition='';});
+  }
   slides[i].dataset.bi=revealAll?bs.length:0;
-  if(!revealAll && !slides[i].hasAttribute('data-hold')){ // auto-reveal first group for rhythm
-    step();
+  let stepped=false;
+  if(!revealAll && !slides[i].hasAttribute('data-hold')){ // auto-play the first group
+    stepped=step();
   }
   bar.style.width=((i+1)/slides.length*100)+'%';
   pg.textContent=(i+1)+' / '+slides.length;
@@ -1180,12 +1255,17 @@ function show(i,revealAll){
   document.getElementById('embers').classList.toggle('on',slides[i].hasAttribute('data-embers'));
   armEgg(slides[i]);
   location.hash=i+1;
-  syncReady();
+  if(!stepped) syncReady();                     // step() already scheduled the tell
 }
-/* Light the chrome once every build on this slide has landed. */
-function syncReady(){
-  const s=slides[cur];
-  document.body.classList.toggle('ready',(+(s.dataset.bi||0))>=buildGroups(s).length);
+/* Warm the page number once the last item has finished arriving, not merely once
+   it has been dispatched, or it would say "done" over a cascade still running. */
+let readyTimer=null;
+function syncReady(after){
+  if(readyTimer){clearTimeout(readyTimer);readyTimer=null;}
+  const s=slides[cur],done=(+(s.dataset.bi||0))>=buildGroups(s).length;
+  if(done&&!(after>0)){document.body.classList.add('ready');return;}
+  document.body.classList.remove('ready');      // drop the last slide's tell first
+  if(done) readyTimer=setTimeout(()=>document.body.classList.add('ready'),after);
 }
 /* Linger on a slide carrying an .egg and it plays itself, once, after half a
    minute — long enough that it lands mid-Q&A rather than on arrival. */
@@ -1198,7 +1278,7 @@ function armEgg(slide){
 }
 function step(){ // reveal the next group; return false if none left
   const s=slides[cur],bs=buildGroups(s);let bi=+(s.dataset.bi||0);
-  if(bi<bs.length){revealGroup(bs[bi]);s.dataset.bi=bi+1;syncReady();return true;}
+  if(bi<bs.length){const ms=revealGroup(bs[bi]);s.dataset.bi=bi+1;syncReady(ms);return true;}
   return false;
 }
 function next(){if(!step())show(cur+1);}
