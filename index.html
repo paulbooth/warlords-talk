@@ -173,6 +173,20 @@ table.tb{border-collapse:collapse;width:100%}
   background:var(--gold-hi);opacity:0;transition:opacity .3s ease}
 body.ready #bar::after{opacity:1;box-shadow:0 0 10px 2px rgba(242,205,126,.5)}
 body.ready #pgnum{color:var(--gold);text-shadow:0 0 14px rgba(217,168,78,.4)}
+
+/* ---- scrubber ----------------------------------------------------------------
+   A 26px grab strip along the bottom edge. It shows nothing until the pointer is
+   on it, so the deck looks untouched while you present and turns into a timeline
+   the moment you reach for it. */
+#scrub{position:absolute;left:0;right:0;bottom:0;height:26px;z-index:60;cursor:ew-resize}
+#scrub .track{position:absolute;left:0;right:0;bottom:0;height:4px;background:rgba(242,205,126,.13);
+  opacity:0;transition:opacity .18s ease}
+#scrub .tip{position:absolute;bottom:34px;transform:translateX(-50%);white-space:nowrap;  /* clears the key hint */
+  background:var(--panel-hi);border:1px solid #4a3b24;border-radius:7px;padding:7px 14px;
+  font-family:var(--disp);font-size:16px;letter-spacing:.12em;color:var(--gold-hi);
+  box-shadow:0 8px 22px rgba(0,0,0,.5);opacity:0;transition:opacity .15s ease;pointer-events:none}
+#scrub:hover .track,body.scrubbing #scrub .track{opacity:1}
+#scrub:hover .tip,body.scrubbing #scrub .tip{opacity:1}
 #acttag{position:absolute;left:26px;bottom:16px;font-family:var(--disp);font-size:16px;letter-spacing:.24em;color:var(--tx3);z-index:50;text-transform:uppercase}
 #embers{position:absolute;inset:0;pointer-events:none;z-index:5;opacity:0;transition:opacity 1.2s}
 #embers.on{opacity:1}
@@ -1100,7 +1114,8 @@ ttest_summon_storm.gd    → storm did… something?
 </section>
 
 <canvas id="embers"></canvas>
-<div id="bar"></div><div id="pgnum"></div><div id="acttag"></div>
+<div id="bar"></div><div id="scrub"><div class="track"></div><div class="tip"></div></div>
+<div id="pgnum"></div><div id="acttag"></div>
 <div id="hint">← → navigate · F fullscreen</div>
 </div></div>
 <div id="rotate">
@@ -1123,15 +1138,24 @@ function fit(){
 addEventListener('resize',fit);
 addEventListener('orientationchange',fit);
 
-/* A caption riding directly behind another build is not its own beat — it arrives
-   with the picture it describes. */
-function ridesAlong(e){return e.classList.contains('cap')&&e.previousElementSibling
-  &&e.previousElementSibling.classList.contains('b');}
-function builds(s){return [...s.querySelectorAll('.b')].filter(e=>!ridesAlong(e));}
-function reveal(e){
-  e.classList.add('on');
-  let n=e.nextElementSibling;
-  while(n&&n.classList.contains('b')&&ridesAlong(n)){n.classList.add('on');n=n.nextElementSibling;}
+/* One click should land a whole thought, not one line of it. Consecutive builds
+   sharing a parent are one group and cascade in together, so a column of bullets,
+   a wall of stats or a row of tiles each cost a single click. A footer note is an
+   aside you say over what is already up, so it rides with the group before it. */
+function buildGroups(s){
+  const out=[];let par=null;
+  for(const e of s.querySelectorAll('.b')){
+    const ride=out.length&&(e.parentElement===par||e.classList.contains('footer-note'));
+    if(ride)out[out.length-1].push(e);
+    else{out.push([e]);par=e.parentElement;}
+  }
+  return out;
+}
+/* Sweep rather than a dump: the step shrinks as the group grows so a twelve-tile
+   wall still finishes in about a second. */
+function revealGroup(g){
+  const ms=Math.max(45,Math.min(120,700/g.length));
+  g.forEach((e,i)=>{e.style.transitionDelay=(i*ms)+'ms';e.classList.add('on');});
 }
 function show(i,revealAll){
   i=Math.max(0,Math.min(slides.length-1,i));
@@ -1141,10 +1165,13 @@ function show(i,revealAll){
   });
   if(cur!==i) stopAllAudio();
   cur=i;
-  const bs=builds(slides[i]);
-  slides[i].querySelectorAll('.b').forEach(b=>b.classList.toggle('on',revealAll||false));
+  const bs=buildGroups(slides[i]);
+  slides[i].querySelectorAll('.b').forEach(b=>{
+    b.style.transitionDelay='';                 // a stale stagger would hold it back
+    b.classList.toggle('on',revealAll||false);
+  });
   slides[i].dataset.bi=revealAll?bs.length:0;
-  if(!revealAll && !slides[i].hasAttribute('data-hold')){ // auto-reveal first build for rhythm
+  if(!revealAll && !slides[i].hasAttribute('data-hold')){ // auto-reveal first group for rhythm
     step();
   }
   bar.style.width=((i+1)/slides.length*100)+'%';
@@ -1158,7 +1185,7 @@ function show(i,revealAll){
 /* Light the chrome once every build on this slide has landed. */
 function syncReady(){
   const s=slides[cur];
-  document.body.classList.toggle('ready',(+(s.dataset.bi||0))>=builds(s).length);
+  document.body.classList.toggle('ready',(+(s.dataset.bi||0))>=buildGroups(s).length);
 }
 /* Linger on a slide carrying an .egg and it plays itself, once, after half a
    minute — long enough that it lands mid-Q&A rather than on arrival. */
@@ -1169,9 +1196,9 @@ function armEgg(slide){
   const egg=slide.querySelector('.egg');
   if(egg) eggTimer=setTimeout(()=>egg.classList.add('go'),30000);
 }
-function step(){ // reveal next build; return false if none left
-  const s=slides[cur],bs=builds(s);let bi=+(s.dataset.bi||0);
-  if(bi<bs.length){reveal(bs[bi]);s.dataset.bi=bi+1;syncReady();return true;}
+function step(){ // reveal the next group; return false if none left
+  const s=slides[cur],bs=buildGroups(s);let bi=+(s.dataset.bi||0);
+  if(bi<bs.length){revealGroup(bs[bi]);s.dataset.bi=bi+1;syncReady();return true;}
   return false;
 }
 function next(){if(!step())show(cur+1);}
@@ -1183,7 +1210,44 @@ addEventListener('keydown',e=>{
   else if(e.key==='End')show(slides.length-1,true);
   else if(e.key==='f'||e.key==='F'){document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen();}
 });
-addEventListener('click',e=>{if(e.target.closest('button,.ba,a,audio,#rotate'))return;next();});
+addEventListener('click',e=>{if(e.target.closest('button,.ba,a,audio,#rotate,#scrub'))return;next();});
+
+/* Drag the bottom edge to move through the deck. Slides land fully built while you
+   scrub, so you can read where you are, and the readout names the act you are in. */
+(function(){
+  const scrub=document.getElementById('scrub'),tip=scrub.querySelector('.tip');
+  const ratio=x=>{const r=scrub.getBoundingClientRect();return (x-r.left)/r.width;};
+  const idxAt=x=>Math.max(0,Math.min(slides.length-1,Math.floor(ratio(x)*slides.length)));
+  function label(i,x){
+    const a=slides[i].dataset.act;
+    tip.textContent=(i+1)+' / '+slides.length+(a?'  ·  '+a:'');
+    tip.style.left=Math.max(110,Math.min(1810,ratio(x)*1920))+'px';   // stage coords, not screen
+  }
+  scrub.addEventListener('pointermove',e=>{if(!e.buttons)label(idxAt(e.clientX),e.clientX);});
+  scrub.addEventListener('pointerdown',e=>{
+    e.preventDefault();e.stopPropagation();
+    document.body.classList.add('scrubbing');
+    try{scrub.setPointerCapture(e.pointerId);}catch(_){}
+    const to=x=>{const i=idxAt(x);label(i,x);if(i!==cur)show(i,true);};
+    /* A mouse has a cursor to aim with, so pressing jumps straight there. A finger
+       does not, and this strip sits under the whole bottom edge, so on touch it
+       takes a real drag to move and a plain tap still just advances. */
+    let moved=!COARSE;
+    if(moved) to(e.clientX);
+    const mv=ev=>{
+      if(!moved){if(Math.abs(ev.clientX-e.clientX)<8)return;moved=true;}
+      to(ev.clientX);
+    };
+    const up=()=>{
+      scrub.removeEventListener('pointermove',mv);
+      document.body.classList.remove('scrubbing');
+      if(!moved) next();
+    };
+    scrub.addEventListener('pointermove',mv);
+    scrub.addEventListener('pointerup',up,{once:true});
+    scrub.addEventListener('pointercancel',up,{once:true});
+  });
+})();
 
 /* On a touch device the footer hint should describe the controls that exist. */
 const COARSE=matchMedia('(pointer:coarse)').matches;
@@ -1211,7 +1275,7 @@ addEventListener('pointerdown',goFullscreenOnce,{once:false});
 let tx=0,ty=0;
 addEventListener('touchstart',e=>{const t=e.changedTouches[0];tx=t.clientX;ty=t.clientY;},{passive:true});
 addEventListener('touchend',e=>{
-  if(e.target.closest('button,.ba,a,audio,#rotate')) return;
+  if(e.target.closest('button,.ba,a,audio,#rotate,#scrub')) return;
   const t=e.changedTouches[0],dx=t.clientX-tx,dy=t.clientY-ty;
   if(Math.abs(dx)>60&&Math.abs(dx)>Math.abs(dy)*1.4){e.preventDefault();dx<0?next():prev();}
 },{passive:false});
