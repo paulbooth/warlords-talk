@@ -1219,11 +1219,9 @@ function buildGroups(s){
    arrivals instead of a single line. The spacing is wide enough that each item
    reads as its own beat, and tightens as the group grows so a thirteen-tile wall
    still lands in about three seconds. */
-const FADE=500;                                    // matches the .b transition
 function revealGroup(g){
   const gap=Math.max(200,Math.min(600,2800/g.length));
   g.forEach((e,i)=>{e.style.transitionDelay=(i*gap)+'ms';e.classList.add('on');});
-  return (g.length-1)*gap+FADE;                    // when the last one has settled
 }
 function show(i,revealAll){
   i=Math.max(0,Math.min(slides.length-1,i));
@@ -1245,9 +1243,8 @@ function show(i,revealAll){
     bl.forEach(b=>{b.style.transition='';});
   }
   slides[i].dataset.bi=revealAll?bs.length:0;
-  let stepped=false;
   if(!revealAll && !slides[i].hasAttribute('data-hold')){ // auto-play the first group
-    stepped=step();
+    step();
   }
   bar.style.width=((i+1)/slides.length*100)+'%';
   pg.textContent=(i+1)+' / '+slides.length;
@@ -1255,17 +1252,15 @@ function show(i,revealAll){
   document.getElementById('embers').classList.toggle('on',slides[i].hasAttribute('data-embers'));
   armEgg(slides[i]);
   location.hash=i+1;
-  if(!stepped) syncReady();                     // step() already scheduled the tell
+  syncReady();
 }
-/* Warm the page number once the last item has finished arriving, not merely once
-   it has been dispatched, or it would say "done" over a cascade still running. */
-let readyTimer=null;
-function syncReady(after){
-  if(readyTimer){clearTimeout(readyTimer);readyTimer=null;}
-  const s=slides[cur],done=(+(s.dataset.bi||0))>=buildGroups(s).length;
-  if(done&&!(after>0)){document.body.classList.add('ready');return;}
-  document.body.classList.remove('ready');      // drop the last slide's tell first
-  if(done) readyTimer=setTimeout(()=>document.body.classList.add('ready'),after);
+/* The tell answers one question: will the next click leave this slide? So it warms
+   the instant the last group is dispatched rather than when the cascade resolves.
+   Holding it back left the number dark while the answer was already yes, which cost
+   a slide every time an early click found nothing left to reveal. */
+function syncReady(){
+  const s=slides[cur];
+  document.body.classList.toggle('ready',(+(s.dataset.bi||0))>=buildGroups(s).length);
 }
 /* Linger on a slide carrying an .egg and it plays itself, once, after half a
    minute — long enough that it lands mid-Q&A rather than on arrival. */
@@ -1278,7 +1273,7 @@ function armEgg(slide){
 }
 function step(){ // reveal the next group; return false if none left
   const s=slides[cur],bs=buildGroups(s);let bi=+(s.dataset.bi||0);
-  if(bi<bs.length){const ms=revealGroup(bs[bi]);s.dataset.bi=bi+1;syncReady(ms);return true;}
+  if(bi<bs.length){revealGroup(bs[bi]);s.dataset.bi=bi+1;syncReady();return true;}
   return false;
 }
 function next(){if(!step())show(cur+1);}
