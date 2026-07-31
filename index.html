@@ -303,6 +303,17 @@ body.ready #pgnum{color:var(--gold);text-shadow:0 0 14px rgba(217,168,78,.4)}
   .confetti{display:none}
 }
 
+/* one honorary award plaque, confetti included */
+.award{position:relative;overflow:hidden;text-align:center;border-radius:14px;padding:22px 20px 26px;
+  border:2px solid var(--gold);background:linear-gradient(180deg,#33280f,#241b10);
+  box-shadow:0 16px 40px rgba(0,0,0,.5),inset 0 0 0 1px rgba(242,205,126,.18)}
+.award .al{font-family:var(--disp);font-size:16px;letter-spacing:.22em;color:var(--gold);text-transform:uppercase}
+.award .an{font-family:var(--disp);font-weight:700;font-size:74px;line-height:1.05;color:var(--gold-hi);
+  letter-spacing:.06em;margin:4px 0 6px;text-shadow:0 0 30px rgba(242,205,126,.35)}
+.award .af{font-family:var(--mono);font-size:19px;color:var(--tx2)}
+.award .confetti i{animation-name:award-conf}
+@keyframes award-conf{0%{transform:translateY(-20px) rotate(0)}100%{transform:translateY(230px) rotate(760deg)}}
+
 /* talking points: a heading you speak to, with anchors rather than a script */
 .pts{margin-top:20px;display:flex;flex-direction:column;gap:15px}
 .pts li{list-style:none;position:relative;padding-left:24px;font-size:25px;line-height:1.32;color:var(--tx2)}
@@ -881,6 +892,31 @@ had no strong genre pull."</div></div>
         <div class="l" style="margin-top:12px;font-style:italic" id="vt-state">Tremor of Earth · with vocals</div>
       </div>
       <div class="quote b" style="margin-top:24px;font-size:23px">All 73, with lyrics:<br><a href="https://thepaulbooth.com/warlords-jukebox/" target="_blank" rel="noopener"><b>thepaulbooth.com/warlords-jukebox</b></a></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ 28 HARI
+     The one slide in the deck about a person who is not me or a model. Every other
+     quality gate here is a script; this one is a guy with headphones. -->
+<section class="slide" data-act="III · Art &amp; Music">
+  <div class="kick">The only ear we had</div>
+  <h2>All hail <em data-fx="rainbow">Hari</em>, our entire music department</h2>
+  <div class="row" style="gap:44px">
+    <div class="col" style="flex:none;width:700px">
+      <div class="frame b"><img src="assets/img/hari_round.jpg" alt="one of Hari's pick-the-take rounds"></div>
+    </div>
+    <div class="col" style="flex:1">
+      <div class="award b">
+        <div class="confetti"></div>
+        <div class="al">Music Director · honorary · unpaid</div>
+        <div class="an" data-fx="wave" style="--amp:.10em">HARI</div>
+        <div class="af">47 songs · 5 rounds · 0 dollars</div>
+      </div>
+      <div class="sub b" style="font-size:26px">Every take went out as an <b>A/B page</b>: play both, pick one, leave a note. Each round came back smaller as he settled them. <b>16 songs left, then 11, then 5.</b></div>
+      <div class="sub b" style="font-size:26px">His round-three verdict, quoted in full: <b>“too much metal.”</b> Half the soundtrack changed genre the next morning.</div>
+      <div class="quote b" style="font-size:24px">He also said the Twins sounded like <b>one person arguing with himself</b>, so they were recast as a brother and a sister. That note is the reason we spent a week teaching Suno to keep two singers apart.</div>
+      <div class="sub b" style="font-size:26px">Everything else in this talk was judged by a script. The soundtrack was judged by <b>a guy with good headphones</b>.</div>
     </div>
   </div>
 </section>
@@ -1474,8 +1510,13 @@ document.querySelectorAll('[data-fx]').forEach(el=>{
         +c.props.map(prop).join('')+`</div>`+(c.ground||[]).map(prop).join('');
       host.appendChild(d);
     });
-    const conf=host.querySelector('.confetti'),hues=['#d9a84e','#b03a34','#7da05a','#f2cd7e','#e6a6f0','#8fd8ff'];
-    for(let i=0;i<34;i++){
+  }
+  /* Every .confetti gets filled the same way, so the award plaque two slides
+     earlier throws the same party without a second copy of this. */
+  const hues=['#d9a84e','#b03a34','#7da05a','#f2cd7e','#e6a6f0','#8fd8ff'];
+  document.querySelectorAll('.confetti').forEach(conf=>{
+    const n=conf.closest('.award')?16:34;
+    for(let i=0;i<n;i++){
       const s=document.createElement('i');
       s.style.left=(Math.random()*100)+'%';
       s.style.background=hues[i%hues.length];
@@ -1483,7 +1524,7 @@ document.querySelectorAll('[data-fx]').forEach(el=>{
       s.style.animationDelay=(-Math.random()*4)+'s';
       conf.appendChild(s);
     }
-  }
+  });
 })();
 
 /* ============ embers ============ */
